@@ -120,7 +120,7 @@ await export.writeToFile(json, './palette.json');
 
 ---
 
-## Architecture
+<!-- ## Architecture
 
 Huevora is organized in three layers:
 
@@ -147,7 +147,7 @@ Internal (lib/src/internal/)
 └── ExportFileWriter   — conditional dart:io export
 ```
 
-**Boundary rule**: No internal types leak into the public API. prism and material_color_utilities types are confined to the internal layer.
+**Boundary rule**: No internal types leak into the public API. prism and material_color_utilities types are confined to the internal layer. -->
 
 ---
 
