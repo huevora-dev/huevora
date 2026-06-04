@@ -12,7 +12,7 @@ A production-grade color engine for Dart. Derive complete design-system palettes
 
 <!-- [![Likes](https://img.shields.io/pub/likes/your_package_name)](https://pub.dev/packages/your_package_name) -->
 
-[![License](https://img.shields.io/github/license/huevora-dev/huevora)](LICENSE)
+<!-- [![License](https://img.shields.io/github/license/huevora-dev/huevora)](LICENSE) -->
 
 [![GitHub Stars](https://img.shields.io/github/stars/huevora-dev/huevora?style=social)](https://github.com/huevora-dev/huevora)
 
