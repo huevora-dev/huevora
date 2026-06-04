@@ -27,9 +27,6 @@ dev_dependencies:
 topics:
   - color
   - palette
-  - design-system
-  - material-design
   - contrast
   - accessibility
-  - oklch
   - export
