@@ -81,6 +81,7 @@ await export.writeToFile(text, './tokens.txt');
 #### Contrast with tone suggestions
 
 ```dart
+
 final result = ContrastEngine().check(
   foreground: palette.primary,
   background: palette.neutral,
