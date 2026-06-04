@@ -42,7 +42,10 @@ abstract final class ColorConverter {
     final normalizedHex = _normalizeHex(hex);
     final rayRgb = RayRgb8.fromHex(normalizedHex, format: HexFormat.rgba);
 
-    return HuevoraColor(hex: normalizedHex, oklch: _toComponents(rayRgb.toOklch()));
+    return HuevoraColor(
+      hex: normalizedHex,
+      oklch: _toComponents(rayRgb.toOklch()),
+    );
   }
 
   /// Constructs a [HuevoraColor] from raw OKLCH channel values.
@@ -52,7 +55,12 @@ abstract final class ColorConverter {
   /// Throws [InvalidChannelValueException] when any channel is invalid.
   static HuevoraColor fromOklch(double l, double c, double h) {
     if (!h.isFinite) {
-      throw InvalidChannelValueException(channel: 'hue', value: h, min: _minHue, max: _maxHue);
+      throw InvalidChannelValueException(
+        channel: 'hue',
+        value: h,
+        min: _minHue,
+        max: _maxHue,
+      );
     }
 
     return fromOklchComponents(OklchComponents(l: l, c: c, h: h));
@@ -66,7 +74,11 @@ abstract final class ColorConverter {
   static HuevoraColor fromOklchComponents(OklchComponents components) {
     _validateOklchComponents(components);
 
-    final rayOklch = RayOklch.fromComponents(components.l, components.c, components.h);
+    final rayOklch = RayOklch.fromComponents(
+      components.l,
+      components.c,
+      components.h,
+    );
     final rayRgb = rayOklch.toRgb8();
 
     return HuevoraColor(hex: _rgbToHex(rayRgb), oklch: components);
@@ -82,7 +94,10 @@ abstract final class ColorConverter {
 
     final rayRgb = RayRgb8.fromComponentsNative(red, green, blue);
 
-    return HuevoraColor(hex: _rgbBytesToHex(red, green, blue), oklch: _toComponents(rayRgb.toOklch()));
+    return HuevoraColor(
+      hex: _rgbBytesToHex(red, green, blue),
+      oklch: _toComponents(rayRgb.toOklch()),
+    );
   }
 
   /// Formats [components] as a CSS `oklch()` string.
@@ -138,7 +153,9 @@ abstract final class ColorConverter {
   }
 
   static void _validateOklchComponents(OklchComponents components) {
-    if (!components.l.isFinite || components.l < _minLightness || components.l > _maxLightness) {
+    if (!components.l.isFinite ||
+        components.l < _minLightness ||
+        components.l > _maxLightness) {
       throw InvalidChannelValueException(
         channel: 'lightness',
         value: components.l,
@@ -148,11 +165,23 @@ abstract final class ColorConverter {
     }
 
     if (!components.c.isFinite || components.c < _minChroma) {
-      throw InvalidChannelValueException(channel: 'chroma', value: components.c, min: _minChroma, max: double.infinity);
+      throw InvalidChannelValueException(
+        channel: 'chroma',
+        value: components.c,
+        min: _minChroma,
+        max: double.infinity,
+      );
     }
 
-    if (!components.h.isFinite || components.h < _minHue || components.h >= _maxHue) {
-      throw InvalidChannelValueException(channel: 'hue', value: components.h, min: _minHue, max: _maxHue);
+    if (!components.h.isFinite ||
+        components.h < _minHue ||
+        components.h >= _maxHue) {
+      throw InvalidChannelValueException(
+        channel: 'hue',
+        value: components.h,
+        min: _minHue,
+        max: _maxHue,
+      );
     }
   }
 }

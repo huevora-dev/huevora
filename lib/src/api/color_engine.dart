@@ -140,12 +140,16 @@ final class ColorEngine {
   ) {
     _validateCustomNames(customColors);
 
-    return List<({String name, HuevoraColor color})>.generate(customColors.length, (index) {
-      final entry = customColors[index];
-      final color = applyGamutPolicy(ColorConverter.fromHex(entry.hex));
+    return List<({String name, HuevoraColor color})>.generate(
+      customColors.length,
+      (index) {
+        final entry = customColors[index];
+        final color = applyGamutPolicy(ColorConverter.fromHex(entry.hex));
 
-      return (name: entry.name, color: color);
-    }, growable: false);
+        return (name: entry.name, color: color);
+      },
+      growable: false,
+    );
   }
 
   static HuevoraColor _clipToSrgb(HuevoraColor color) {
@@ -157,14 +161,19 @@ final class ColorEngine {
     return color;
   }
 
-  static void _validateCustomNames(List<({String name, String hex})> customColors) {
+  static void _validateCustomNames(
+    List<({String name, String hex})> customColors,
+  ) {
     final seen = <String>{};
 
     for (final entry in customColors) {
       final name = entry.name;
 
       if (name.trim().isEmpty) {
-        throw ArgumentError('Custom color names must be non-empty.', 'customColors');
+        throw ArgumentError(
+          'Custom color names must be non-empty.',
+          'customColors',
+        );
       }
 
       if (!seen.add(name)) {

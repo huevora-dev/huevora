@@ -3,7 +3,8 @@ import 'package:huevora/src/models/color_role.dart';
 import 'package:huevora/src/models/core_palette.dart';
 import 'package:huevora/src/models/huevora_color.dart';
 import 'package:huevora/src/models/tonal_palette_result.dart';
-import 'package:material_color_utilities/material_color_utilities.dart' hide CorePalette;
+import 'package:material_color_utilities/material_color_utilities.dart'
+    hide CorePalette;
 
 /// Generates tonal palettes from a validated Huevora core palette.
 ///
@@ -24,7 +25,26 @@ import 'package:material_color_utilities/material_color_utilities.dart' hide Cor
 /// - Does not perform contrast validation.
 abstract final class TonalGenerator {
   /// Standard 18-step tone array for chromatic roles.
-  static const List<int> _standardTones = <int>[0, 5, 10, 15, 20, 25, 30, 35, 40, 50, 60, 70, 80, 90, 95, 98, 99, 100];
+  static const List<int> _standardTones = <int>[
+    0,
+    5,
+    10,
+    15,
+    20,
+    25,
+    30,
+    35,
+    40,
+    50,
+    60,
+    70,
+    80,
+    90,
+    95,
+    98,
+    99,
+    100,
+  ];
 
   /// Neutral 28-step tone array for neutral and neutralVariant roles.
   static const List<int> _neutralTones = <int>[
@@ -60,20 +80,30 @@ abstract final class TonalGenerator {
 
   /// Generates tonal palettes for all standard and custom colors in [palette].
   static TonalPaletteResult generate(CorePalette palette) {
-    return TonalPaletteResult(tones: _buildStandardToneMaps(palette), customTones: _buildCustomToneMaps(palette));
+    return TonalPaletteResult(
+      tones: _buildStandardToneMaps(palette),
+      customTones: _buildCustomToneMaps(palette),
+    );
   }
 
-  static Map<ColorRole, Map<int, HuevoraColor>> _buildStandardToneMaps(CorePalette palette) {
+  static Map<ColorRole, Map<int, HuevoraColor>> _buildStandardToneMaps(
+    CorePalette palette,
+  ) {
     final tones = <ColorRole, Map<int, HuevoraColor>>{};
 
     for (final entry in palette.asMap().entries) {
-      tones[entry.key] = _buildToneMap(entry.value, _toneStepsForRole(entry.key));
+      tones[entry.key] = _buildToneMap(
+        entry.value,
+        _toneStepsForRole(entry.key),
+      );
     }
 
     return Map<ColorRole, Map<int, HuevoraColor>>.unmodifiable(tones);
   }
 
-  static Map<String, Map<int, HuevoraColor>> _buildCustomToneMaps(CorePalette palette) {
+  static Map<String, Map<int, HuevoraColor>> _buildCustomToneMaps(
+    CorePalette palette,
+  ) {
     if (palette.custom.isEmpty) {
       return const <String, Map<int, HuevoraColor>>{};
     }
@@ -113,7 +143,10 @@ abstract final class TonalGenerator {
     };
   }
 
-  static Map<int, HuevoraColor> _buildToneMap(HuevoraColor base, List<int> toneSteps) {
+  static Map<int, HuevoraColor> _buildToneMap(
+    HuevoraColor base,
+    List<int> toneSteps,
+  ) {
     final hct = Hct.fromInt(base.argb);
     final tonalPalette = TonalPalette.fromHct(hct);
     final tones = <int, HuevoraColor>{};

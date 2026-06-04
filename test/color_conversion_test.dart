@@ -206,7 +206,13 @@ void main() {
       });
 
       test('oklch.h is always in [0, 360)', () {
-        for (final hex in ['#FF0000', '#00FF00', '#0000FF', '#FFFF00', '#FF00FF']) {
+        for (final hex in [
+          '#FF0000',
+          '#00FF00',
+          '#0000FF',
+          '#FFFF00',
+          '#FF00FF',
+        ]) {
           final color = ColorConverter.fromHex(hex);
           expect(color.oklch.h, inInclusiveRange(0.0, 360.0));
           expect(color.oklch.h, isNot(equals(360.0)));
@@ -253,19 +259,31 @@ void main() {
 
     group('invalid input → InvalidHexException', () {
       test('empty string', () {
-        expect(() => ColorConverter.fromHex(''), throwsA(isA<InvalidHexException>()));
+        expect(
+          () => ColorConverter.fromHex(''),
+          throwsA(isA<InvalidHexException>()),
+        );
       });
 
       test('5-digit hex', () {
-        expect(() => ColorConverter.fromHex('#ABCDE'), throwsA(isA<InvalidHexException>()));
+        expect(
+          () => ColorConverter.fromHex('#ABCDE'),
+          throwsA(isA<InvalidHexException>()),
+        );
       });
 
       test('7-digit hex (too long)', () {
-        expect(() => ColorConverter.fromHex('#1234567'), throwsA(isA<InvalidHexException>()));
+        expect(
+          () => ColorConverter.fromHex('#1234567'),
+          throwsA(isA<InvalidHexException>()),
+        );
       });
 
       test('non-hex characters', () {
-        expect(() => ColorConverter.fromHex('#ZZZZZZ'), throwsA(isA<InvalidHexException>()));
+        expect(
+          () => ColorConverter.fromHex('#ZZZZZZ'),
+          throwsA(isA<InvalidHexException>()),
+        );
       });
 
       test('InvalidHexException carries the original input', () {
@@ -294,15 +312,24 @@ void main() {
     });
 
     test('l > 1.0 throws InvalidChannelValueException', () {
-      expect(() => ColorConverter.fromOklch(1.1, 0.1, 100.0), throwsA(isA<InvalidChannelValueException>()));
+      expect(
+        () => ColorConverter.fromOklch(1.1, 0.1, 100.0),
+        throwsA(isA<InvalidChannelValueException>()),
+      );
     });
 
     test('l < 0.0 throws InvalidChannelValueException', () {
-      expect(() => ColorConverter.fromOklch(-0.01, 0.1, 100.0), throwsA(isA<InvalidChannelValueException>()));
+      expect(
+        () => ColorConverter.fromOklch(-0.01, 0.1, 100.0),
+        throwsA(isA<InvalidChannelValueException>()),
+      );
     });
 
     test('negative chroma throws InvalidChannelValueException', () {
-      expect(() => ColorConverter.fromOklch(0.5, -0.01, 100.0), throwsA(isA<InvalidChannelValueException>()));
+      expect(
+        () => ColorConverter.fromOklch(0.5, -0.01, 100.0),
+        throwsA(isA<InvalidChannelValueException>()),
+      );
     });
 
     test('exception carries the channel name', () {
@@ -321,7 +348,11 @@ void main() {
 
     test('hex→oklch→hex round-trip is stable to ±1 per channel', () {
       final original = ColorConverter.fromHex('#4A90E2');
-      final rt = ColorConverter.fromOklch(original.oklch.l, original.oklch.c, original.oklch.h);
+      final rt = ColorConverter.fromOklch(
+        original.oklch.l,
+        original.oklch.c,
+        original.oklch.h,
+      );
       final origR = (original.argb >> 16) & 0xFF;
       final origG = (original.argb >> 8) & 0xFF;
       final origB = original.argb & 0xFF;
@@ -347,7 +378,10 @@ void main() {
 
     test('invalid lightness still throws', () {
       const bad = OklchComponents(l: 1.5, c: 0.1, h: 0.0);
-      expect(() => ColorConverter.fromOklchComponents(bad), throwsA(isA<InvalidChannelValueException>()));
+      expect(
+        () => ColorConverter.fromOklchComponents(bad),
+        throwsA(isA<InvalidChannelValueException>()),
+      );
     });
   });
 
@@ -475,19 +509,25 @@ void main() {
 
     group('clip — out-of-gamut reduction', () {
       test('very high chroma OKLCH clips to in-gamut result', () {
-        final raw = ColorConverter.fromOklchComponents(const OklchComponents(l: 0.5, c: 0.5, h: 200.0));
+        final raw = ColorConverter.fromOklchComponents(
+          const OklchComponents(l: 0.5, c: 0.5, h: 200.0),
+        );
         final clipped = GamutGuard.clip(raw);
         expect(GamutGuard.isInGamut(clipped), isTrue);
       });
 
       test('clipping preserves hue within ±5°', () {
-        final raw = ColorConverter.fromOklchComponents(const OklchComponents(l: 0.5, c: 0.5, h: 200.0));
+        final raw = ColorConverter.fromOklchComponents(
+          const OklchComponents(l: 0.5, c: 0.5, h: 200.0),
+        );
         final clipped = GamutGuard.clip(raw);
         expect((clipped.oklch.h - 200.0).abs(), lessThanOrEqualTo(5.0));
       });
 
       test('clipped color has lower or equal chroma than source', () {
-        final source = ColorConverter.fromOklchComponents(const OklchComponents(l: 0.5, c: 0.5, h: 30.0));
+        final source = ColorConverter.fromOklchComponents(
+          const OklchComponents(l: 0.5, c: 0.5, h: 30.0),
+        );
         final clipped = GamutGuard.clip(source);
         expect(clipped.oklch.c, lessThanOrEqualTo(source.oklch.c + 0.001));
       });
@@ -505,8 +545,12 @@ void main() {
 
       test('all results are in-gamut', () {
         final colors = [
-          ColorConverter.fromOklchComponents(const OklchComponents(l: 0.5, c: 0.5, h: 30.0)),
-          ColorConverter.fromOklchComponents(const OklchComponents(l: 0.6, c: 0.5, h: 180.0)),
+          ColorConverter.fromOklchComponents(
+            const OklchComponents(l: 0.5, c: 0.5, h: 30.0),
+          ),
+          ColorConverter.fromOklchComponents(
+            const OklchComponents(l: 0.6, c: 0.5, h: 180.0),
+          ),
           ColorConverter.fromHex('#FF0000'),
         ];
         for (final c in GamutGuard.clipAll(colors)) {
@@ -516,7 +560,10 @@ void main() {
 
       test('returns a fixed-length list (not growable)', () {
         final result = GamutGuard.clipAll([ColorConverter.fromHex('#4A90E2')]);
-        expect(() => result.add(ColorConverter.fromHex('#FF0000')), throwsUnsupportedError);
+        expect(
+          () => result.add(ColorConverter.fromHex('#FF0000')),
+          throwsUnsupportedError,
+        );
       });
     });
 
@@ -624,20 +671,33 @@ void main() {
 
     group('InvalidChannelValueException', () {
       test('toString contains channel name and value', () {
-        const e = InvalidChannelValueException(channel: 'lightness', value: 1.5, min: 0.0, max: 1.0);
+        const e = InvalidChannelValueException(
+          channel: 'lightness',
+          value: 1.5,
+          min: 0.0,
+          max: 1.0,
+        );
         expect(e.toString(), contains('lightness'));
         expect(e.toString(), contains('1.5'));
       });
 
       test('toString contains the legal range', () {
-        const e = InvalidChannelValueException(channel: 'chroma', value: -0.1, min: 0.0, max: double.infinity);
+        const e = InvalidChannelValueException(
+          channel: 'chroma',
+          value: -0.1,
+          min: 0.0,
+          max: double.infinity,
+        );
         expect(e.toString(), contains('0.0'));
       });
     });
 
     group('OutOfGamutException', () {
       test('toString contains sourceHex and clampedHex', () {
-        const e = OutOfGamutException(sourceHex: '#SOURCE1', clampedHex: '#CLAMPED');
+        const e = OutOfGamutException(
+          sourceHex: '#SOURCE1',
+          clampedHex: '#CLAMPED',
+        );
         expect(e.toString(), contains('#SOURCE1'));
         expect(e.toString(), contains('#CLAMPED'));
       });
@@ -645,7 +705,10 @@ void main() {
 
     group('HuevoraExportException', () {
       test('toString contains filePath and cause', () {
-        const e = HuevoraExportException(filePath: '/tmp/export.json', cause: 'no space left');
+        const e = HuevoraExportException(
+          filePath: '/tmp/export.json',
+          cause: 'no space left',
+        );
         expect(e.toString(), contains('/tmp/export.json'));
         expect(e.toString(), contains('no space left'));
       });

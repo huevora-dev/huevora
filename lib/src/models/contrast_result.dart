@@ -91,7 +91,9 @@ final class ContrastResult {
   bool get passesApcaUiMinimum => apcaUsage != ApcaUsageLevel.insufficient;
 
   /// Whether the pair meets APCA minimum for body text.
-  bool get passesApcaBodyText => apcaUsage == ApcaUsageLevel.bodyText || apcaUsage == ApcaUsageLevel.fluentText;
+  bool get passesApcaBodyText =>
+      apcaUsage == ApcaUsageLevel.bodyText ||
+      apcaUsage == ApcaUsageLevel.fluentText;
 
   @override
   String toString() {
@@ -103,13 +105,20 @@ final class ContrastResult {
         ')';
   }
 
-  static void _validateMetrics({required double apcaLc, required double wcagRatio}) {
+  static void _validateMetrics({
+    required double apcaLc,
+    required double wcagRatio,
+  }) {
     if (!apcaLc.isFinite) {
       throw ArgumentError.value(apcaLc, 'apcaLc', 'Must be finite.');
     }
 
     if (!wcagRatio.isFinite || wcagRatio < _minWcagRatio) {
-      throw ArgumentError.value(wcagRatio, 'wcagRatio', 'Must be finite and >= 1.0.');
+      throw ArgumentError.value(
+        wcagRatio,
+        'wcagRatio',
+        'Must be finite and >= 1.0.',
+      );
     }
   }
 
@@ -119,19 +128,33 @@ final class ContrastResult {
     }
   }
 
-  static void _validateApcaUsage({required double apcaLc, required ApcaUsageLevel apcaUsage}) {
+  static void _validateApcaUsage({
+    required double apcaLc,
+    required ApcaUsageLevel apcaUsage,
+  }) {
     final expected = ApcaUsageLevel.fromAbsoluteLc(apcaLc.abs());
 
     if (apcaUsage != expected) {
-      throw ArgumentError.value(apcaUsage, 'apcaUsage', 'Must match apcaLc.abs(). Expected ${expected.name}.');
+      throw ArgumentError.value(
+        apcaUsage,
+        'apcaUsage',
+        'Must match apcaLc.abs(). Expected ${expected.name}.',
+      );
     }
   }
 
-  static void _validateWcagRating({required double wcagRatio, required WcagRating wcagRating}) {
+  static void _validateWcagRating({
+    required double wcagRatio,
+    required WcagRating wcagRating,
+  }) {
     final expected = _ratingForWcagRatio(wcagRatio);
 
     if (wcagRating != expected) {
-      throw ArgumentError.value(wcagRating, 'wcagRating', 'Must match wcagRatio. Expected ${expected.name}.');
+      throw ArgumentError.value(
+        wcagRating,
+        'wcagRating',
+        'Must match wcagRatio. Expected ${expected.name}.',
+      );
     }
   }
 
@@ -187,7 +210,11 @@ enum ApcaUsageLevel {
 
   static ApcaUsageLevel fromAbsoluteLc(double absLc) {
     if (!absLc.isFinite || absLc < 0.0) {
-      throw ArgumentError.value(absLc, 'absLc', 'Must be finite and non-negative.');
+      throw ArgumentError.value(
+        absLc,
+        'absLc',
+        'Must be finite and non-negative.',
+      );
     }
 
     if (absLc >= 90.0) return fluentText;

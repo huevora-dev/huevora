@@ -11,17 +11,26 @@ void main() {
   group('ApcaCalculator.computeLc', () {
     group('black on white (maximum positive Lc)', () {
       test('Lc is approximately +106', () {
-        expect(ApcaCalculator.computeLc(0, 0, 0, 255, 255, 255), closeTo(106.0, 2.0));
+        expect(
+          ApcaCalculator.computeLc(0, 0, 0, 255, 255, 255),
+          closeTo(106.0, 2.0),
+        );
       });
 
       test('Lc is positive (dark fg on light bg)', () {
-        expect(ApcaCalculator.computeLc(0, 0, 0, 255, 255, 255), greaterThan(0.0));
+        expect(
+          ApcaCalculator.computeLc(0, 0, 0, 255, 255, 255),
+          greaterThan(0.0),
+        );
       });
     });
 
     group('white on black (maximum negative Lc)', () {
       test('Lc is approximately −108', () {
-        expect(ApcaCalculator.computeLc(255, 255, 255, 0, 0, 0), closeTo(-107.9, 2.0));
+        expect(
+          ApcaCalculator.computeLc(255, 255, 255, 0, 0, 0),
+          closeTo(-107.9, 2.0),
+        );
       });
 
       test('Lc is negative (light fg on dark bg)', () {
@@ -54,7 +63,10 @@ void main() {
     group('ApcaUsageLevel.fromAbsoluteLc — threshold boundaries', () {
       test('|Lc| = 106 → fluentText', () {
         final lc = ApcaCalculator.computeLc(0, 0, 0, 255, 255, 255);
-        expect(ApcaUsageLevel.fromAbsoluteLc(lc.abs()), ApcaUsageLevel.fluentText);
+        expect(
+          ApcaUsageLevel.fromAbsoluteLc(lc.abs()),
+          ApcaUsageLevel.fluentText,
+        );
       });
 
       test('|Lc| = 90.0 → fluentText', () {
@@ -86,7 +98,10 @@ void main() {
       });
 
       test('|Lc| = 44.9 → insufficient', () {
-        expect(ApcaUsageLevel.fromAbsoluteLc(44.9), ApcaUsageLevel.insufficient);
+        expect(
+          ApcaUsageLevel.fromAbsoluteLc(44.9),
+          ApcaUsageLevel.insufficient,
+        );
       });
 
       test('|Lc| = 0.0 → insufficient', () {
@@ -125,7 +140,10 @@ void main() {
     });
 
     test('insufficient.description mentions insufficient', () {
-      expect(ApcaUsageLevel.insufficient.description.toLowerCase(), contains('insufficient'));
+      expect(
+        ApcaUsageLevel.insufficient.description.toLowerCase(),
+        contains('insufficient'),
+      );
     });
   });
 
@@ -149,29 +167,61 @@ void main() {
 
     group('black on white', () {
       test('apcaLc ≈ +106', () => expect(high.apcaLc, closeTo(106.0, 2.0)));
-      test('apcaUsage is fluentText', () => expect(high.apcaUsage, ApcaUsageLevel.fluentText));
-      test('wcagRatio ≈ 21.0', () => expect(high.wcagRatio, closeTo(21.0, 0.1)));
+      test(
+        'apcaUsage is fluentText',
+        () => expect(high.apcaUsage, ApcaUsageLevel.fluentText),
+      );
+      test(
+        'wcagRatio ≈ 21.0',
+        () => expect(high.wcagRatio, closeTo(21.0, 0.1)),
+      );
       test('wcagRating is aaa', () => expect(high.wcagRating, WcagRating.aaa));
       test('passesWcagAA', () => expect(high.passesWcagAA, isTrue));
       test('passesWcagAAA', () => expect(high.passesWcagAAA, isTrue));
       test('passesApcaBodyText', () => expect(high.passesApcaBodyText, isTrue));
-      test('passesApcaUiMinimum', () => expect(high.passesApcaUiMinimum, isTrue));
+      test(
+        'passesApcaUiMinimum',
+        () => expect(high.passesApcaUiMinimum, isTrue),
+      );
       test('advice is non-empty', () => expect(high.advice, isNotEmpty));
-      test('advice contains APCA', () => expect(high.advice.toLowerCase(), contains('apca')));
-      test('advice contains WCAG', () => expect(high.advice.toLowerCase(), contains('wcag')));
-      test('suggestedFgTones is null (no palette)', () => expect(high.suggestedFgTones, isNull));
-      test('suggestedBgTones is null (no palette)', () => expect(high.suggestedBgTones, isNull));
+      test(
+        'advice contains APCA',
+        () => expect(high.advice.toLowerCase(), contains('apca')),
+      );
+      test(
+        'advice contains WCAG',
+        () => expect(high.advice.toLowerCase(), contains('wcag')),
+      );
+      test(
+        'suggestedFgTones is null (no palette)',
+        () => expect(high.suggestedFgTones, isNull),
+      );
+      test(
+        'suggestedBgTones is null (no palette)',
+        () => expect(high.suggestedBgTones, isNull),
+      );
     });
 
     group('low contrast (similar greys)', () {
       test('passesWcagAA is false', () => expect(low.passesWcagAA, isFalse));
-      test('passesApcaBodyText is false', () => expect(low.passesApcaBodyText, isFalse));
+      test(
+        'passesApcaBodyText is false',
+        () => expect(low.passesApcaBodyText, isFalse),
+      );
       test('wcagRating is fail', () => expect(low.wcagRating, WcagRating.fail));
-      test('apcaUsage is insufficient', () => expect(low.apcaUsage, ApcaUsageLevel.insufficient));
+      test(
+        'apcaUsage is insufficient',
+        () => expect(low.apcaUsage, ApcaUsageLevel.insufficient),
+      );
       test('advice mentions improvement', () {
         expect(
           low.advice.toLowerCase(),
-          anyOf(contains('insufficient'), contains('adjust'), contains('darker'), contains('lighter')),
+          anyOf(
+            contains('insufficient'),
+            contains('adjust'),
+            contains('darker'),
+            contains('lighter'),
+          ),
         );
       });
     });
@@ -288,7 +338,11 @@ void main() {
             bgG,
             bgB,
           ).abs();
-          expect(absLc, greaterThanOrEqualTo(45.0), reason: 'Tone $tone has |Lc|=$absLc below minimum');
+          expect(
+            absLc,
+            greaterThanOrEqualTo(45.0),
+            reason: 'Tone $tone has |Lc|=$absLc below minimum',
+          );
         }
       }
     });

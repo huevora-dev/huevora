@@ -57,7 +57,10 @@ void main() {
       });
 
       test('throws ArgumentError for ColorRole.custom', () {
-        expect(() => result.getTonesForRole(ColorRole.custom), throwsA(isA<ArgumentError>()));
+        expect(
+          () => result.getTonesForRole(ColorRole.custom),
+          throwsA(isA<ArgumentError>()),
+        );
       });
     });
 
@@ -85,7 +88,26 @@ void main() {
     });
 
     group('standard roles use 18-step array', () {
-      const standardSteps = [0, 5, 10, 15, 20, 25, 30, 35, 40, 50, 60, 70, 80, 90, 95, 98, 99, 100];
+      const standardSteps = [
+        0,
+        5,
+        10,
+        15,
+        20,
+        25,
+        30,
+        35,
+        40,
+        50,
+        60,
+        70,
+        80,
+        90,
+        95,
+        98,
+        99,
+        100,
+      ];
 
       for (final role in [
         ColorRole.primary,
@@ -203,7 +225,8 @@ void main() {
           expect(
             toneMap[0]!.oklch.l,
             lessThan(0.15),
-            reason: '${role.name} tone 0 L=${toneMap[0]!.oklch.l} not near black',
+            reason:
+                '${role.name} tone 0 L=${toneMap[0]!.oklch.l} not near black',
           );
         });
 
@@ -213,7 +236,8 @@ void main() {
           expect(
             toneMap[100]!.oklch.l,
             greaterThan(0.90),
-            reason: '${role.name} tone 100 L=${toneMap[100]!.oklch.l} not near white',
+            reason:
+                '${role.name} tone 100 L=${toneMap[100]!.oklch.l} not near white',
           );
         });
       }
@@ -300,7 +324,9 @@ void main() {
     test('custom color produces a tone map in customTones', () {
       final palette = ColorEngine().deriveCorePalette(
         _primaryHex,
-        DerivationConfig(customColors: [(name: 'brand-accent', hex: '#FF6B35')]),
+        DerivationConfig(
+          customColors: [(name: 'brand-accent', hex: '#FF6B35')],
+        ),
       );
       final result = ColorEngine().generateTonalPalettes(palette);
       expect(result.customTones.containsKey('brand-accent'), isTrue);
@@ -309,7 +335,9 @@ void main() {
     test('custom color tone map has 18 steps (standard array)', () {
       final palette = ColorEngine().deriveCorePalette(
         _primaryHex,
-        DerivationConfig(customColors: [(name: 'brand-accent', hex: '#FF6B35')]),
+        DerivationConfig(
+          customColors: [(name: 'brand-accent', hex: '#FF6B35')],
+        ),
       );
       final result = ColorEngine().generateTonalPalettes(palette);
       expect(result.getCustomTonesForRole('brand-accent').length, 18);
@@ -318,7 +346,9 @@ void main() {
     test('tonesForCustom returns correct map by name', () {
       final palette = ColorEngine().deriveCorePalette(
         _primaryHex,
-        DerivationConfig(customColors: [(name: 'brand-accent', hex: '#FF6B35')]),
+        DerivationConfig(
+          customColors: [(name: 'brand-accent', hex: '#FF6B35')],
+        ),
       );
       final result = ColorEngine().generateTonalPalettes(palette);
       final tones = result.getCustomTonesForRole('brand-accent');
@@ -329,7 +359,12 @@ void main() {
     test('multiple custom colors each get their own tone map', () {
       final palette = ColorEngine().deriveCorePalette(
         _primaryHex,
-        DerivationConfig(customColors: [(name: 'accent', hex: '#FF6B35'), (name: 'promo', hex: '#AA00FF')]),
+        DerivationConfig(
+          customColors: [
+            (name: 'accent', hex: '#FF6B35'),
+            (name: 'promo', hex: '#AA00FF'),
+          ],
+        ),
       );
       final result = ColorEngine().generateTonalPalettes(palette);
       expect(result.customTones.length, 2);
@@ -391,27 +426,40 @@ void main() {
     });
 
     test('pure black primary generates a valid tonal result', () {
-      final result = engine.generateTonalPalettes(engine.deriveCorePalette('#000000'));
+      final result = engine.generateTonalPalettes(
+        engine.deriveCorePalette('#000000'),
+      );
       expect(result.getTonesForRole(ColorRole.primary), isNotEmpty);
     });
 
     test('pure white primary generates a valid tonal result', () {
-      final result = engine.generateTonalPalettes(engine.deriveCorePalette('#FFFFFF'));
+      final result = engine.generateTonalPalettes(
+        engine.deriveCorePalette('#FFFFFF'),
+      );
       expect(result.getTonesForRole(ColorRole.primary), isNotEmpty);
     });
 
     test('pure red primary generates a valid tonal result', () {
-      final result = engine.generateTonalPalettes(engine.deriveCorePalette('#FF0000'));
+      final result = engine.generateTonalPalettes(
+        engine.deriveCorePalette('#FF0000'),
+      );
       expect(result.getTonesForRole(ColorRole.primary), isNotEmpty);
     });
 
     test('result.tones is unmodifiable', () {
-      final result = engine.generateTonalPalettes(engine.deriveCorePalette(_primaryHex));
-      expect(() => result.tones[ColorRole.primary] = {}, throwsUnsupportedError);
+      final result = engine.generateTonalPalettes(
+        engine.deriveCorePalette(_primaryHex),
+      );
+      expect(
+        () => result.tones[ColorRole.primary] = {},
+        throwsUnsupportedError,
+      );
     });
 
     test('result.customTones is unmodifiable', () {
-      final result = engine.generateTonalPalettes(engine.deriveCorePalette(_primaryHex));
+      final result = engine.generateTonalPalettes(
+        engine.deriveCorePalette(_primaryHex),
+      );
       expect(() => result.customTones['new'] = {}, throwsUnsupportedError);
     });
   });
@@ -453,7 +501,11 @@ void main() {
       final result = TonalGenerator.generate(palette);
       for (final toneMap in result.tones.values) {
         for (final color in toneMap.values) {
-          expect(color.argb >> 24, equals(0xFF), reason: 'Alpha byte not 0xFF: ${color.argb.toRadixString(16)}');
+          expect(
+            color.argb >> 24,
+            equals(0xFF),
+            reason: 'Alpha byte not 0xFF: ${color.argb.toRadixString(16)}',
+          );
         }
       }
     });

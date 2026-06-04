@@ -43,8 +43,15 @@ final class ExportEngine {
 
   const ExportEngine();
 
-  String toJson(CorePalette core, TonalPaletteResult? tonal, [ExportConfig config = const ExportConfig.full()]) {
-    final root = <String, Object>{'huevora_version': _version, 'generated_at': _utcTimestamp()};
+  String toJson(
+    CorePalette core,
+    TonalPaletteResult? tonal, [
+    ExportConfig config = const ExportConfig.full(),
+  ]) {
+    final root = <String, Object>{
+      'huevora_version': _version,
+      'generated_at': _utcTimestamp(),
+    };
 
     if (config.includeCorePalette) {
       root['core_palette'] = _buildCoreJson(core, config);
@@ -57,7 +64,11 @@ final class ExportEngine {
     return _jsonEncoder.convert(root);
   }
 
-  String toText(CorePalette core, TonalPaletteResult? tonal, [ExportConfig config = const ExportConfig.full()]) {
+  String toText(
+    CorePalette core,
+    TonalPaletteResult? tonal, [
+    ExportConfig config = const ExportConfig.full(),
+  ]) {
     final buffer = StringBuffer()
       ..writeln('-- HUEVORA EXPORT --')
       ..writeln('Generated: ${_utcTimestamp()}')
@@ -97,13 +108,20 @@ final class ExportEngine {
     }
 
     map['custom'] = <Map<String, Object>>[
-      for (final custom in core.custom) <String, Object>{'name': custom.name, ..._colorJson(custom.color, config)},
+      for (final custom in core.custom)
+        <String, Object>{
+          'name': custom.name,
+          ..._colorJson(custom.color, config),
+        },
     ];
 
     return map;
   }
 
-  Map<String, Object> _buildTonalJson(TonalPaletteResult tonal, ExportConfig config) {
+  Map<String, Object> _buildTonalJson(
+    TonalPaletteResult tonal,
+    ExportConfig config,
+  ) {
     final map = <String, Object>{};
 
     for (final role in _standardRoles) {
@@ -128,10 +146,16 @@ final class ExportEngine {
     return map;
   }
 
-  Map<String, Object> _toneMapJson(Map<int, HuevoraColor> toneMap, ExportConfig config) {
+  Map<String, Object> _toneMapJson(
+    Map<int, HuevoraColor> toneMap,
+    ExportConfig config,
+  ) {
     final tones = _sortedToneKeys(toneMap);
 
-    return <String, Object>{for (final tone in tones) tone.toString(): _colorJson(toneMap[tone]!, config)};
+    return <String, Object>{
+      for (final tone in tones)
+        tone.toString(): _colorJson(toneMap[tone]!, config),
+    };
   }
 
   Map<String, String> _colorJson(HuevoraColor color, ExportConfig config) {
@@ -144,7 +168,11 @@ final class ExportEngine {
     return map;
   }
 
-  void _writeCorePaletteText(StringBuffer buffer, CorePalette core, ExportConfig config) {
+  void _writeCorePaletteText(
+    StringBuffer buffer,
+    CorePalette core,
+    ExportConfig config,
+  ) {
     final roleColors = core.asMap();
 
     for (final role in _standardRoles) {
@@ -156,17 +184,36 @@ final class ExportEngine {
     }
   }
 
-  void _writeTonalPalettesText(StringBuffer buffer, TonalPaletteResult tonal, ExportConfig config) {
+  void _writeTonalPalettesText(
+    StringBuffer buffer,
+    TonalPaletteResult tonal,
+    ExportConfig config,
+  ) {
     for (final role in _standardRoles) {
-      _writeToneMapText(buffer, _roleToken(role), tonal.getTonesForRole(role), config);
+      _writeToneMapText(
+        buffer,
+        _roleToken(role),
+        tonal.getTonesForRole(role),
+        config,
+      );
     }
 
     for (final name in tonal.customRoleNames) {
-      _writeToneMapText(buffer, 'custom-$name', tonal.getCustomTonesForRole(name), config);
+      _writeToneMapText(
+        buffer,
+        'custom-$name',
+        tonal.getCustomTonesForRole(name),
+        config,
+      );
     }
   }
 
-  void _writeToneMapText(StringBuffer buffer, String tokenPrefix, Map<int, HuevoraColor> toneMap, ExportConfig config) {
+  void _writeToneMapText(
+    StringBuffer buffer,
+    String tokenPrefix,
+    Map<int, HuevoraColor> toneMap,
+    ExportConfig config,
+  ) {
     if (toneMap.isEmpty) {
       return;
     }
@@ -176,7 +223,12 @@ final class ExportEngine {
     }
   }
 
-  void _writeColorLine(StringBuffer buffer, String token, HuevoraColor color, ExportConfig config) {
+  void _writeColorLine(
+    StringBuffer buffer,
+    String token,
+    HuevoraColor color,
+    ExportConfig config,
+  ) {
     buffer.write('${token.padRight(30)}  ${color.hex}');
 
     if (config.includeOklch) {

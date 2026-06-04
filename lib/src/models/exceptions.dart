@@ -81,7 +81,10 @@ final class OutOfGamutException extends HuevoraException {
   /// A clipped, in-gamut alternative at the same perceived hue and lightness.
   final String clampedHex;
 
-  const OutOfGamutException({required this.sourceHex, required this.clampedHex});
+  const OutOfGamutException({
+    required this.sourceHex,
+    required this.clampedHex,
+  });
 
   @override
   String toString() =>
@@ -104,5 +107,6 @@ final class HuevoraExportException extends HuevoraException {
   const HuevoraExportException({required this.filePath, required this.cause});
 
   @override
-  String toString() => 'HuevoraExportException: failed to write to "$filePath". Cause: $cause';
+  String toString() =>
+      'HuevoraExportException: failed to write to "$filePath". Cause: $cause';
 }

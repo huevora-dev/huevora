@@ -47,7 +47,11 @@ abstract final class GamutGuard {
 
   /// Clips every color in [colors].
   static List<HuevoraColor> clipAll(List<HuevoraColor> colors) {
-    return List<HuevoraColor>.generate(colors.length, (index) => clip(colors[index]), growable: false);
+    return List<HuevoraColor>.generate(
+      colors.length,
+      (index) => clip(colors[index]),
+      growable: false,
+    );
   }
 
   /// Throws [OutOfGamutException] when [color] is outside sRGB.
@@ -56,7 +60,9 @@ abstract final class GamutGuard {
       return;
     }
 
-    final clipped = ColorConverter.fromOklchComponents(_clipComponentsToSrgb(color.oklch));
+    final clipped = ColorConverter.fromOklchComponents(
+      _clipComponentsToSrgb(color.oklch),
+    );
 
     throw OutOfGamutException(sourceHex: color.hex, clampedHex: clipped.hex);
   }
@@ -109,7 +115,11 @@ abstract final class GamutGuard {
     // conservative near the true sRGB boundary. Verify with an OKLCH→RGB8→OKLCH
     // round-trip. In-gamut colors survive round-trip with negligible drift;
     // out-of-gamut colors are altered by RGB8 clamping.
-    final rayOklch = RayOklch.fromComponents(components.l, components.c, components.h);
+    final rayOklch = RayOklch.fromComponents(
+      components.l,
+      components.c,
+      components.h,
+    );
     final rayRgb = rayOklch.toRgb8();
     final roundTrip = rayRgb.toOklch();
 
@@ -126,7 +136,9 @@ abstract final class GamutGuard {
     }
 
     // Hue is unstable near zero chroma; skip angular check for achromatic colors.
-    final isAchromatic = components.c <= achromaticThreshold || roundTrip.chroma <= achromaticThreshold;
+    final isAchromatic =
+        components.c <= achromaticThreshold ||
+        roundTrip.chroma <= achromaticThreshold;
 
     if (isAchromatic) {
       return true;
@@ -154,15 +166,30 @@ abstract final class GamutGuard {
 
   static void _validateComponents(OklchComponents components) {
     if (!components.l.isFinite || components.l < 0.0 || components.l > 1.0) {
-      throw InvalidChannelValueException(channel: 'lightness', value: components.l, min: 0.0, max: 1.0);
+      throw InvalidChannelValueException(
+        channel: 'lightness',
+        value: components.l,
+        min: 0.0,
+        max: 1.0,
+      );
     }
 
     if (!components.c.isFinite || components.c < 0.0) {
-      throw InvalidChannelValueException(channel: 'chroma', value: components.c, min: 0.0, max: double.infinity);
+      throw InvalidChannelValueException(
+        channel: 'chroma',
+        value: components.c,
+        min: 0.0,
+        max: double.infinity,
+      );
     }
 
     if (!components.h.isFinite || components.h < 0.0 || components.h >= 360.0) {
-      throw InvalidChannelValueException(channel: 'hue', value: components.h, min: 0.0, max: 360.0);
+      throw InvalidChannelValueException(
+        channel: 'hue',
+        value: components.h,
+        min: 0.0,
+        max: 360.0,
+      );
     }
   }
 

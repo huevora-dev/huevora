@@ -47,7 +47,14 @@ abstract final class ApcaCalculator {
   );
 
   /// Computes signed APCA Lc for a foreground/background RGB pair.
-  static double computeLc(int fgR, int fgG, int fgB, int bgR, int bgG, int bgB) {
+  static double computeLc(
+    int fgR,
+    int fgG,
+    int fgB,
+    int bgR,
+    int bgG,
+    int bgB,
+  ) {
     _validateRgbByte('fgR', fgR);
     _validateRgbByte('fgG', fgG);
     _validateRgbByte('fgB', fgB);
@@ -66,7 +73,9 @@ abstract final class ApcaCalculator {
     final yBgClamped = _softClamp(yBg);
 
     if (yBgClamped > yTxtClamped) {
-      final sapc = (math.pow(yBgClamped, _normBg) - math.pow(yTxtClamped, _normTxt)) * _scaleBoW;
+      final sapc =
+          (math.pow(yBgClamped, _normBg) - math.pow(yTxtClamped, _normTxt)) *
+          _scaleBoW;
 
       if (sapc < _loClip) {
         return 0.0;
@@ -75,7 +84,9 @@ abstract final class ApcaCalculator {
       return (sapc - _loBoWoffset) * _lcScale;
     }
 
-    final sapc = (math.pow(yBgClamped, _revBg) - math.pow(yTxtClamped, _revTxt)) * _scaleWoB;
+    final sapc =
+        (math.pow(yBgClamped, _revBg) - math.pow(yTxtClamped, _revTxt)) *
+        _scaleWoB;
 
     if (sapc > -_loClip) {
       return 0.0;
@@ -85,7 +96,9 @@ abstract final class ApcaCalculator {
   }
 
   static double _luminance(int r, int g, int b) {
-    return _sRco * _linearRgbByByte[r] + _sGco * _linearRgbByByte[g] + _sBco * _linearRgbByByte[b];
+    return _sRco * _linearRgbByByte[r] +
+        _sGco * _linearRgbByByte[g] +
+        _sBco * _linearRgbByByte[b];
   }
 
   static double _softClamp(double y) {
@@ -98,7 +111,11 @@ abstract final class ApcaCalculator {
 
   static void _validateRgbByte(String channel, int value) {
     if (value < 0 || value > 255) {
-      throw ArgumentError.value(value, channel, 'RGB channel must be in [0, 255].');
+      throw ArgumentError.value(
+        value,
+        channel,
+        'RGB channel must be in [0, 255].',
+      );
     }
   }
 }

@@ -55,29 +55,50 @@ abstract final class PaletteDeriver {
     );
   }
 
-  static HuevoraColor _deriveSecondary(OklchComponents primary, DerivationConfig config) {
+  static HuevoraColor _deriveSecondary(
+    OklchComponents primary,
+    DerivationConfig config,
+  ) {
     return _materialize(
-      OklchComponents(l: primary.l, c: primary.c * _secondaryChromaScale, h: primary.h + config.secondaryHueOffset),
+      OklchComponents(
+        l: primary.l,
+        c: primary.c * _secondaryChromaScale,
+        h: primary.h + config.secondaryHueOffset,
+      ),
     );
   }
 
   static HuevoraColor _deriveTertiary(OklchComponents primary) {
     return _materialize(
-      OklchComponents(l: primary.l, c: primary.c * _tertiaryChromaScale, h: primary.h + _complementaryHueOffset),
+      OklchComponents(
+        l: primary.l,
+        c: primary.c * _tertiaryChromaScale,
+        h: primary.h + _complementaryHueOffset,
+      ),
     );
   }
 
-  static HuevoraColor _deriveNeutral(OklchComponents primary, DerivationConfig config) {
+  static HuevoraColor _deriveNeutral(
+    OklchComponents primary,
+    DerivationConfig config,
+  ) {
     return _materialize(
       OklchComponents(
         l: _neutralSeedLightness,
-        c: _clamp(primary.c * _neutralChromaScale, config.neutralMinChroma, config.neutralMaxChroma),
+        c: _clamp(
+          primary.c * _neutralChromaScale,
+          config.neutralMinChroma,
+          config.neutralMaxChroma,
+        ),
         h: primary.h,
       ),
     );
   }
 
-  static HuevoraColor _deriveNeutralVariant(OklchComponents primary, DerivationConfig config) {
+  static HuevoraColor _deriveNeutralVariant(
+    OklchComponents primary,
+    DerivationConfig config,
+  ) {
     return _materialize(
       OklchComponents(
         l: _neutralSeedLightness,
@@ -91,18 +112,28 @@ abstract final class PaletteDeriver {
     );
   }
 
-  static HuevoraColor _deriveSemantic(OklchComponents primary, DerivationConfig config, double baseHue) {
+  static HuevoraColor _deriveSemantic(
+    OklchComponents primary,
+    DerivationConfig config,
+    double baseHue,
+  ) {
     return _materialize(
       OklchComponents(
         l: primary.l,
-        c: _clamp(primary.c * _semanticChromaScale, config.semanticMinChroma, config.semanticMaxChroma),
+        c: _clamp(
+          primary.c * _semanticChromaScale,
+          config.semanticMinChroma,
+          config.semanticMaxChroma,
+        ),
         h: _blendHue(baseHue, primary.h, config.semanticBrandingWeight),
       ),
     );
   }
 
   static HuevoraColor _materialize(OklchComponents components) {
-    return ColorConverter.fromOklchComponents(GamutGuard.clipComponents(components));
+    return ColorConverter.fromOklchComponents(
+      GamutGuard.clipComponents(components),
+    );
   }
 
   /// Blends from [base] toward [target] using linear interpolation.

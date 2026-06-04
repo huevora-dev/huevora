@@ -191,7 +191,10 @@ void main() {
       });
 
       test('throws ArgumentError for ColorRole.custom', () {
-        expect(() => palette.colorFor(ColorRole.custom), throwsA(isA<ArgumentError>()));
+        expect(
+          () => palette.colorFor(ColorRole.custom),
+          throwsA(isA<ArgumentError>()),
+        );
       });
     });
 
@@ -232,7 +235,10 @@ void main() {
       });
 
       test('hue offset from primary is approximately +30°', () {
-        expect(_hueDiff(primary.oklch.h, palette.secondary.oklch.h), closeTo(30.0, 5.0));
+        expect(
+          _hueDiff(primary.oklch.h, palette.secondary.oklch.h),
+          closeTo(30.0, 5.0),
+        );
       });
 
       test('is in-gamut', () {
@@ -246,7 +252,10 @@ void main() {
       });
 
       test('hue is approximately complementary (+180°) to primary', () {
-        expect(_hueDiff(primary.oklch.h, palette.tertiary.oklch.h), closeTo(180.0, 5.0));
+        expect(
+          _hueDiff(primary.oklch.h, palette.tertiary.oklch.h),
+          closeTo(180.0, 5.0),
+        );
       });
 
       test('is in-gamut', () {
@@ -256,7 +265,10 @@ void main() {
 
     group('neutral', () {
       test('hue matches primary hue (within round-trip tolerance)', () {
-        expect(_hueDiff(primary.oklch.h, palette.neutral.oklch.h), lessThanOrEqualTo(5.0));
+        expect(
+          _hueDiff(primary.oklch.h, palette.neutral.oklch.h),
+          lessThanOrEqualTo(5.0),
+        );
       });
 
       test('chroma is at or below default max 0.006', () {
@@ -274,15 +286,24 @@ void main() {
 
     group('neutralVariant', () {
       test('hue matches primary hue (within round-trip tolerance)', () {
-        expect(_hueDiff(primary.oklch.h, palette.neutralVariant.oklch.h), lessThanOrEqualTo(5.0));
+        expect(
+          _hueDiff(primary.oklch.h, palette.neutralVariant.oklch.h),
+          lessThanOrEqualTo(5.0),
+        );
       });
 
       test('chroma is higher than neutral chroma', () {
-        expect(palette.neutralVariant.oklch.c, greaterThan(palette.neutral.oklch.c - 0.001));
+        expect(
+          palette.neutralVariant.oklch.c,
+          greaterThan(palette.neutral.oklch.c - 0.001),
+        );
       });
 
       test('chroma is at or below default max 0.010', () {
-        expect(palette.neutralVariant.oklch.c, lessThanOrEqualTo(0.010 + 0.001));
+        expect(
+          palette.neutralVariant.oklch.c,
+          lessThanOrEqualTo(0.010 + 0.001),
+        );
       });
 
       test('is in-gamut', () {
@@ -291,26 +312,43 @@ void main() {
     });
 
     group('semantic signals', () {
-      test('success hue is closer to semantic base (~145°) than primary hue', () {
-        final successHue = palette.success.oklch.h;
-        final distToBase = _hueDiff(145.0, successHue);
-        final distToPrimary = _hueDiff(primary.oklch.h, successHue);
-        expect(distToBase, lessThan(distToPrimary + 1.0));
-      });
+      test(
+        'success hue is closer to semantic base (~145°) than primary hue',
+        () {
+          final successHue = palette.success.oklch.h;
+          final distToBase = _hueDiff(145.0, successHue);
+          final distToPrimary = _hueDiff(primary.oklch.h, successHue);
+          expect(distToBase, lessThan(distToPrimary + 1.0));
+        },
+      );
 
       test('error hue is in the red-orange family after branding pull', () {
         expect(palette.error.oklch.h, inInclusiveRange(15.0, 100.0));
       });
 
       test('all semantic signals are in-gamut', () {
-        for (final role in [ColorRole.success, ColorRole.error, ColorRole.warning, ColorRole.info]) {
+        for (final role in [
+          ColorRole.success,
+          ColorRole.error,
+          ColorRole.warning,
+          ColorRole.info,
+        ]) {
           final color = palette.colorFor(role);
-          expect(GamutGuard.isInGamut(color), isTrue, reason: '${role.name} is out of gamut: ${color.hex}');
+          expect(
+            GamutGuard.isInGamut(color),
+            isTrue,
+            reason: '${role.name} is out of gamut: ${color.hex}',
+          );
         }
       });
 
       test('all semantic signals have sufficient chroma (≥ 0.008)', () {
-        for (final role in [ColorRole.success, ColorRole.error, ColorRole.warning, ColorRole.info]) {
+        for (final role in [
+          ColorRole.success,
+          ColorRole.error,
+          ColorRole.warning,
+          ColorRole.info,
+        ]) {
           expect(
             palette.colorFor(role).oklch.c,
             greaterThanOrEqualTo(0.008),
@@ -321,21 +359,48 @@ void main() {
     });
 
     group('config tuning', () {
-      test('semanticBrandingWeight=0.0 keeps error near semantic base (~25°)', () {
-        final derived = PaletteDeriver.derive(primary, DerivationConfig(semanticBrandingWeight: 0.0));
-        expect(_hueDiff(25.0, derived.error.oklch.h), lessThanOrEqualTo(10.0));
-      });
+      test(
+        'semanticBrandingWeight=0.0 keeps error near semantic base (~25°)',
+        () {
+          final derived = PaletteDeriver.derive(
+            primary,
+            DerivationConfig(semanticBrandingWeight: 0.0),
+          );
+          expect(
+            _hueDiff(25.0, derived.error.oklch.h),
+            lessThanOrEqualTo(10.0),
+          );
+        },
+      );
 
       test('semanticBrandingWeight=1.0 pulls error toward primary hue', () {
-        final derived = PaletteDeriver.derive(primary, DerivationConfig(semanticBrandingWeight: 1.0));
-        expect(_hueDiff(primary.oklch.h, derived.error.oklch.h), lessThanOrEqualTo(10.0));
+        final derived = PaletteDeriver.derive(
+          primary,
+          DerivationConfig(semanticBrandingWeight: 1.0),
+        );
+        expect(
+          _hueDiff(primary.oklch.h, derived.error.oklch.h),
+          lessThanOrEqualTo(10.0),
+        );
       });
 
-      test('negative secondaryHueOffset produces a different secondary than positive', () {
-        final pos = PaletteDeriver.derive(primary, DerivationConfig(secondaryHueOffset: 30.0));
-        final neg = PaletteDeriver.derive(primary, DerivationConfig(secondaryHueOffset: -30.0));
-        expect(pos.secondary.oklch.h, isNot(closeTo(neg.secondary.oklch.h, 5.0)));
-      });
+      test(
+        'negative secondaryHueOffset produces a different secondary than positive',
+        () {
+          final pos = PaletteDeriver.derive(
+            primary,
+            DerivationConfig(secondaryHueOffset: 30.0),
+          );
+          final neg = PaletteDeriver.derive(
+            primary,
+            DerivationConfig(secondaryHueOffset: -30.0),
+          );
+          expect(
+            pos.secondary.oklch.h,
+            isNot(closeTo(neg.secondary.oklch.h, 5.0)),
+          );
+        },
+      );
 
       test('custom neutral chroma bounds are respected', () {
         final derived = PaletteDeriver.derive(
@@ -363,7 +428,10 @@ void main() {
     });
 
     test('throws InvalidHexException for bad primary hex', () {
-      expect(() => engine.deriveCorePalette('#ZZZZZZ'), throwsA(isA<InvalidHexException>()));
+      expect(
+        () => engine.deriveCorePalette('#ZZZZZZ'),
+        throwsA(isA<InvalidHexException>()),
+      );
     });
 
     test('all standard roles are in-gamut', () {
@@ -394,14 +462,20 @@ void main() {
 
       test('throws InvalidHexException for bad custom hex', () {
         expect(
-          () => engine.deriveCorePalette(_primaryHex, DerivationConfig(customColors: [(name: 'bad', hex: '#ZZZZZZ')])),
+          () => engine.deriveCorePalette(
+            _primaryHex,
+            DerivationConfig(customColors: [(name: 'bad', hex: '#ZZZZZZ')]),
+          ),
           throwsA(isA<InvalidHexException>()),
         );
       });
 
       test('throws ArgumentError for empty custom name', () {
         expect(
-          () => engine.deriveCorePalette(_primaryHex, DerivationConfig(customColors: [(name: '', hex: '#FF6B35')])),
+          () => engine.deriveCorePalette(
+            _primaryHex,
+            DerivationConfig(customColors: [(name: '', hex: '#FF6B35')]),
+          ),
           throwsA(isA<ArgumentError>()),
         );
       });
@@ -410,7 +484,12 @@ void main() {
         expect(
           () => engine.deriveCorePalette(
             _primaryHex,
-            DerivationConfig(customColors: [(name: 'accent', hex: '#FF6B35'), (name: 'accent', hex: '#AA00FF')]),
+            DerivationConfig(
+              customColors: [
+                (name: 'accent', hex: '#FF6B35'),
+                (name: 'accent', hex: '#AA00FF'),
+              ],
+            ),
           ),
           throwsA(isA<ArgumentError>()),
         );
@@ -419,7 +498,12 @@ void main() {
       test('multiple valid custom colors are all appended in order', () {
         final palette = engine.deriveCorePalette(
           _primaryHex,
-          DerivationConfig(customColors: [(name: 'accent', hex: '#FF6B35'), (name: 'promo', hex: '#AA00FF')]),
+          DerivationConfig(
+            customColors: [
+              (name: 'accent', hex: '#FF6B35'),
+              (name: 'promo', hex: '#AA00FF'),
+            ],
+          ),
         );
         expect(palette.custom.length, 2);
         expect(palette.custom[0].name, 'accent');
@@ -510,7 +594,8 @@ void main() {
     });
 
     test('all standard roles in returned palette are in-gamut', () {
-      for (final color in engine.validateCorePalette(validInput).asMap().values) {
+      for (final color
+          in engine.validateCorePalette(validInput).asMap().values) {
         expect(GamutGuard.isInGamut(color), isTrue);
       }
     });
@@ -547,7 +632,10 @@ void main() {
             error: '#BA1A1A',
             warning: '#7D5700',
             info: '#00639B',
-            customColors: [(name: 'dup', hex: '#FF6B35'), (name: 'dup', hex: '#AA00FF')],
+            customColors: [
+              (name: 'dup', hex: '#FF6B35'),
+              (name: 'dup', hex: '#AA00FF'),
+            ],
           ),
         ),
         throwsA(isA<ArgumentError>()),
@@ -566,7 +654,10 @@ void main() {
     });
 
     test('fromHex throws InvalidHexException for bad input', () {
-      expect(() => engine.fromHex('#ZZZZZZ'), throwsA(isA<InvalidHexException>()));
+      expect(
+        () => engine.fromHex('#ZZZZZZ'),
+        throwsA(isA<InvalidHexException>()),
+      );
     });
 
     test('fromOklch returns a HuevoraColor', () {
@@ -574,7 +665,10 @@ void main() {
     });
 
     test('fromOklch throws InvalidChannelValueException for bad l', () {
-      expect(() => engine.fromOklch(1.5, 0.1, 0.0), throwsA(isA<InvalidChannelValueException>()));
+      expect(
+        () => engine.fromOklch(1.5, 0.1, 0.0),
+        throwsA(isA<InvalidChannelValueException>()),
+      );
     });
 
     test('toHex returns the hex field', () {
@@ -588,7 +682,10 @@ void main() {
     });
 
     test('toOklchString starts with oklch(', () {
-      expect(engine.toOklchString(engine.fromHex('#4A90E2')), startsWith('oklch('));
+      expect(
+        engine.toOklchString(engine.fromHex('#4A90E2')),
+        startsWith('oklch('),
+      );
     });
   });
   // ===========================================================================
@@ -602,7 +699,10 @@ void main() {
     });
 
     test('fromHex throws InvalidHexException for bad input', () {
-      expect(() => engine.fromHex('#ZZZZZZ'), throwsA(isA<InvalidHexException>()));
+      expect(
+        () => engine.fromHex('#ZZZZZZ'),
+        throwsA(isA<InvalidHexException>()),
+      );
     });
 
     test('fromOklch returns a HuevoraColor', () {
@@ -610,7 +710,10 @@ void main() {
     });
 
     test('fromOklch throws InvalidChannelValueException for bad l', () {
-      expect(() => engine.fromOklch(1.5, 0.1, 0.0), throwsA(isA<InvalidChannelValueException>()));
+      expect(
+        () => engine.fromOklch(1.5, 0.1, 0.0),
+        throwsA(isA<InvalidChannelValueException>()),
+      );
     });
 
     test('toHex returns the hex field', () {
@@ -624,7 +727,10 @@ void main() {
     });
 
     test('toOklchString starts with oklch(', () {
-      expect(engine.toOklchString(engine.fromHex('#4A90E2')), startsWith('oklch('));
+      expect(
+        engine.toOklchString(engine.fromHex('#4A90E2')),
+        startsWith('oklch('),
+      );
     });
   });
 }

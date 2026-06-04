@@ -87,12 +87,24 @@ final class ContrastEngine {
 
     if (tonalResult != null) {
       if (fgRole != null && fgRole != ColorRole.custom) {
-        final candidates = _suggestFgTones(fgRole: fgRole, bgR: bgR, bgG: bgG, bgB: bgB, tonalResult: tonalResult);
+        final candidates = _suggestFgTones(
+          fgRole: fgRole,
+          bgR: bgR,
+          bgG: bgG,
+          bgB: bgB,
+          tonalResult: tonalResult,
+        );
         if (candidates.isNotEmpty) suggestedFgTones = candidates;
       }
 
       if (bgRole != null && bgRole != ColorRole.custom) {
-        final candidates = _suggestBgTones(bgRole: bgRole, fgR: fgR, fgG: fgG, fgB: fgB, tonalResult: tonalResult);
+        final candidates = _suggestBgTones(
+          bgRole: bgRole,
+          fgR: fgR,
+          fgG: fgG,
+          fgB: fgB,
+          tonalResult: tonalResult,
+        );
         if (candidates.isNotEmpty) suggestedBgTones = candidates;
       }
     }
@@ -116,14 +128,23 @@ final class ContrastEngine {
   static double _wcagLuminance(int r, int g, int b) {
     double toLinear(int channel) {
       final srgb = channel / 255.0;
-      return srgb <= 0.04045 ? srgb / 12.92 : math.pow((srgb + 0.055) / 1.055, 2.4).toDouble();
+      return srgb <= 0.04045
+          ? srgb / 12.92
+          : math.pow((srgb + 0.055) / 1.055, 2.4).toDouble();
     }
 
     return 0.2126 * toLinear(r) + 0.7152 * toLinear(g) + 0.0722 * toLinear(b);
   }
 
   /// WCAG 2.x contrast ratio = (Ylighter + 0.05) / (Ydarker + 0.05). Always ≥ 1.
-  static double _wcagContrastRatio(int fgR, int fgG, int fgB, int bgR, int bgG, int bgB) {
+  static double _wcagContrastRatio(
+    int fgR,
+    int fgG,
+    int fgB,
+    int bgR,
+    int bgG,
+    int bgB,
+  ) {
     final Yfg = _wcagLuminance(fgR, fgG, fgB);
     final Ybg = _wcagLuminance(bgR, bgG, bgB);
     final lighter = math.max(Yfg, Ybg);
@@ -142,7 +163,12 @@ final class ContrastEngine {
   // Advice generation
   // ---------------------------------------------------------------------------
 
-  static String _buildAdvice(double apcaLc, ApcaUsageLevel apcaUsage, double wcagRatio, WcagRating wcagRating) {
+  static String _buildAdvice(
+    double apcaLc,
+    ApcaUsageLevel apcaUsage,
+    double wcagRatio,
+    WcagRating wcagRating,
+  ) {
     final buffer = StringBuffer();
     final absLc = apcaLc.abs().toStringAsFixed(1);
     final ratioStr = wcagRatio.toStringAsFixed(2);
@@ -181,7 +207,14 @@ final class ContrastEngine {
     final passing = <MapEntry<int, double>>[];
     for (final entry in tonalResult.getTonesForRole(fgRole).entries) {
       final cArgb = entry.value.argb;
-      final lc = ApcaCalculator.computeLc((cArgb >> 16) & 0xFF, (cArgb >> 8) & 0xFF, cArgb & 0xFF, bgR, bgG, bgB);
+      final lc = ApcaCalculator.computeLc(
+        (cArgb >> 16) & 0xFF,
+        (cArgb >> 8) & 0xFF,
+        cArgb & 0xFF,
+        bgR,
+        bgG,
+        bgB,
+      );
       final absLc = lc.abs();
       if (absLc >= 45.0) passing.add(MapEntry(entry.key, absLc));
     }
@@ -199,7 +232,14 @@ final class ContrastEngine {
     final passing = <MapEntry<int, double>>[];
     for (final entry in tonalResult.getTonesForRole(bgRole).entries) {
       final cArgb = entry.value.argb;
-      final lc = ApcaCalculator.computeLc(fgR, fgG, fgB, (cArgb >> 16) & 0xFF, (cArgb >> 8) & 0xFF, cArgb & 0xFF);
+      final lc = ApcaCalculator.computeLc(
+        fgR,
+        fgG,
+        fgB,
+        (cArgb >> 16) & 0xFF,
+        (cArgb >> 8) & 0xFF,
+        cArgb & 0xFF,
+      );
       final absLc = lc.abs();
       if (absLc >= 45.0) passing.add(MapEntry(entry.key, absLc));
     }

@@ -25,19 +25,38 @@ final class ExportConfig {
   final bool includeOklch;
 
   /// Creates an [ExportConfig] with explicit flag values.
-  const ExportConfig({this.includeCorePalette = true, this.includeTonalPalettes = true, this.includeOklch = true});
+  const ExportConfig({
+    this.includeCorePalette = true,
+    this.includeTonalPalettes = true,
+    this.includeOklch = true,
+  });
 
   /// Includes every export section and representation.
   const ExportConfig.full() : this();
 
   /// Includes both sections in hex-only mode.
-  const ExportConfig.hexOnly() : this(includeCorePalette: true, includeTonalPalettes: true, includeOklch: false);
+  const ExportConfig.hexOnly()
+    : this(
+        includeCorePalette: true,
+        includeTonalPalettes: true,
+        includeOklch: false,
+      );
 
   /// Includes only the core palette section.
-  const ExportConfig.coreOnly() : this(includeCorePalette: true, includeTonalPalettes: false, includeOklch: true);
+  const ExportConfig.coreOnly()
+    : this(
+        includeCorePalette: true,
+        includeTonalPalettes: false,
+        includeOklch: true,
+      );
 
   /// Includes only the tonal palettes section.
-  const ExportConfig.tonalOnly() : this(includeCorePalette: false, includeTonalPalettes: true, includeOklch: true);
+  const ExportConfig.tonalOnly()
+    : this(
+        includeCorePalette: false,
+        includeTonalPalettes: true,
+        includeOklch: true,
+      );
 
   @override
   bool operator ==(Object other) {

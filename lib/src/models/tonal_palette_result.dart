@@ -57,7 +57,9 @@ final class TonalPaletteResult {
   }) {
     return TonalPaletteResult._(
       tones: _freezeStandardTones(tones),
-      customTones: _freezeCustomTones(customTones ?? const <String, Map<int, HuevoraColor>>{}),
+      customTones: _freezeCustomTones(
+        customTones ?? const <String, Map<int, HuevoraColor>>{},
+      ),
     );
   }
 
@@ -66,7 +68,11 @@ final class TonalPaletteResult {
   /// Throws [ArgumentError] when [role] is [ColorRole.custom].
   Map<int, HuevoraColor> getTonesForRole(ColorRole role) {
     if (role == ColorRole.custom) {
-      throw ArgumentError.value(role, 'role', 'ColorRole.custom does not map to a single standard tone map.');
+      throw ArgumentError.value(
+        role,
+        'role',
+        'ColorRole.custom does not map to a single standard tone map.',
+      );
     }
 
     return tones[role] ?? _emptyToneMap;
@@ -103,7 +109,9 @@ final class TonalPaletteResult {
     return buffer.toString();
   }
 
-  static Map<ColorRole, Map<int, HuevoraColor>> _freezeStandardTones(Map<ColorRole, Map<int, HuevoraColor>> tones) {
+  static Map<ColorRole, Map<int, HuevoraColor>> _freezeStandardTones(
+    Map<ColorRole, Map<int, HuevoraColor>> tones,
+  ) {
     _validateStandardToneRoles(tones);
 
     final frozen = <ColorRole, Map<int, HuevoraColor>>{};
@@ -115,7 +123,9 @@ final class TonalPaletteResult {
     return Map<ColorRole, Map<int, HuevoraColor>>.unmodifiable(frozen);
   }
 
-  static Map<String, Map<int, HuevoraColor>> _freezeCustomTones(Map<String, Map<int, HuevoraColor>> customTones) {
+  static Map<String, Map<int, HuevoraColor>> _freezeCustomTones(
+    Map<String, Map<int, HuevoraColor>> customTones,
+  ) {
     if (customTones.isEmpty) {
       return const <String, Map<int, HuevoraColor>>{};
     }
@@ -129,7 +139,9 @@ final class TonalPaletteResult {
     return Map<String, Map<int, HuevoraColor>>.unmodifiable(frozen);
   }
 
-  static void _validateStandardToneRoles(Map<ColorRole, Map<int, HuevoraColor>> tones) {
+  static void _validateStandardToneRoles(
+    Map<ColorRole, Map<int, HuevoraColor>> tones,
+  ) {
     final missingRoles = <ColorRole>[];
 
     for (final role in _standardRoles) {
@@ -139,7 +151,11 @@ final class TonalPaletteResult {
     }
 
     if (missingRoles.isNotEmpty) {
-      throw ArgumentError.value(_formatRoles(missingRoles), 'tones', 'Missing tone maps for standard roles.');
+      throw ArgumentError.value(
+        _formatRoles(missingRoles),
+        'tones',
+        'Missing tone maps for standard roles.',
+      );
     }
 
     final unsupportedRoles = <ColorRole>[];

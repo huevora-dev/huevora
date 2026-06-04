@@ -14,7 +14,7 @@ If you discover a security vulnerability in Huevora, please report it responsibl
 
 **Do NOT open a public issue.**
 
-Instead, email security@huevora.dev (or the repository maintainer) with:
+Instead, email security.huevora.dev@gmail.com (or the repository maintainer) with:
 - A description of the vulnerability
 - Steps to reproduce
 - Potential impact

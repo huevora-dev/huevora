@@ -38,5 +38,6 @@ enum ColorRole {
   ///
   /// Semantic signal colors undergo hue blending toward the primary during
   /// derivation to produce branded-but-recognisable output.
-  bool get isSemanticSignal => this == success || this == error || this == warning || this == info;
+  bool get isSemanticSignal =>
+      this == success || this == error || this == warning || this == info;
 }

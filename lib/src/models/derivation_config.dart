@@ -82,7 +82,11 @@ final class DerivationConfig {
     _validateUnitInterval('semanticBrandingWeight', semanticBrandingWeight);
     _validateFinite('secondaryHueOffset', secondaryHueOffset);
     _validateChromaRange('neutral', neutralMinChroma, neutralMaxChroma);
-    _validateChromaRange('neutralVariant', neutralVariantMinChroma, neutralVariantMaxChroma);
+    _validateChromaRange(
+      'neutralVariant',
+      neutralVariantMinChroma,
+      neutralVariantMaxChroma,
+    );
     _validateChromaRange('semantic', semanticMinChroma, semanticMaxChroma);
 
     return DerivationConfig._(
@@ -94,7 +98,9 @@ final class DerivationConfig {
       neutralVariantMaxChroma: neutralVariantMaxChroma,
       semanticMinChroma: semanticMinChroma,
       semanticMaxChroma: semanticMaxChroma,
-      customColors: List<({String name, String hex})>.unmodifiable(customColors),
+      customColors: List<({String name, String hex})>.unmodifiable(
+        customColors,
+      ),
     );
   }
 
@@ -115,7 +121,11 @@ final class DerivationConfig {
 
   static void _validateUnitInterval(String name, double value) {
     if (!value.isFinite || value < 0.0 || value > 1.0) {
-      throw ArgumentError.value(value, name, 'Must be finite and in [0.0, 1.0].');
+      throw ArgumentError.value(
+        value,
+        name,
+        'Must be finite and in [0.0, 1.0].',
+      );
     }
   }
 
@@ -127,11 +137,19 @@ final class DerivationConfig {
 
   static void _validateChromaRange(String name, double min, double max) {
     if (!min.isFinite || min < 0.0) {
-      throw ArgumentError.value(min, '${name}MinChroma', 'Must be finite and >= 0.0.');
+      throw ArgumentError.value(
+        min,
+        '${name}MinChroma',
+        'Must be finite and >= 0.0.',
+      );
     }
 
     if (!max.isFinite || max < 0.0) {
-      throw ArgumentError.value(max, '${name}MaxChroma', 'Must be finite and >= 0.0.');
+      throw ArgumentError.value(
+        max,
+        '${name}MaxChroma',
+        'Must be finite and >= 0.0.',
+      );
     }
 
     if (min > max) {
@@ -182,7 +200,10 @@ final class DerivationConfig {
         ')';
   }
 
-  static bool _recordsEqual(List<({String name, String hex})> left, List<({String name, String hex})> right) {
+  static bool _recordsEqual(
+    List<({String name, String hex})> left,
+    List<({String name, String hex})> right,
+  ) {
     if (identical(left, right)) return true;
     if (left.length != right.length) return false;
 
@@ -190,7 +211,8 @@ final class DerivationConfig {
       final leftEntry = left[index];
       final rightEntry = right[index];
 
-      if (leftEntry.name != rightEntry.name || leftEntry.hex != rightEntry.hex) {
+      if (leftEntry.name != rightEntry.name ||
+          leftEntry.hex != rightEntry.hex) {
         return false;
       }
     }

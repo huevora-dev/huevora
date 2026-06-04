@@ -155,19 +155,31 @@ void main() {
   // ===========================================================================
   group('ExportEngine.toJson ExportConfig flags', () {
     test('includeCorePalette=false omits core_palette', () {
-      final json = ExportEngine().toJson(palette, tonal, const ExportConfig(includeCorePalette: false));
+      final json = ExportEngine().toJson(
+        palette,
+        tonal,
+        const ExportConfig(includeCorePalette: false),
+      );
       final decoded = jsonDecode(json) as Map<String, dynamic>;
       expect(decoded.containsKey('core_palette'), isFalse);
     });
 
     test('includeTonalPalettes=false omits tonal_palettes', () {
-      final json = ExportEngine().toJson(palette, tonal, const ExportConfig(includeTonalPalettes: false));
+      final json = ExportEngine().toJson(
+        palette,
+        tonal,
+        const ExportConfig(includeTonalPalettes: false),
+      );
       final decoded = jsonDecode(json) as Map<String, dynamic>;
       expect(decoded.containsKey('tonal_palettes'), isFalse);
     });
 
     test('includeOklch=false omits oklch fields', () {
-      final json = ExportEngine().toJson(palette, tonal, const ExportConfig(includeOklch: false));
+      final json = ExportEngine().toJson(
+        palette,
+        tonal,
+        const ExportConfig(includeOklch: false),
+      );
       final decoded = jsonDecode(json) as Map<String, dynamic>;
       final core = decoded['core_palette'] as Map<String, dynamic>;
       final primary = core['primary'] as Map<String, dynamic>;
@@ -182,7 +194,11 @@ void main() {
     });
 
     test('hexOnly() produces hex-only output', () {
-      final json = ExportEngine().toJson(palette, tonal, ExportConfig.hexOnly());
+      final json = ExportEngine().toJson(
+        palette,
+        tonal,
+        ExportConfig.hexOnly(),
+      );
       final decoded = jsonDecode(json) as Map<String, dynamic>;
       final core = decoded['core_palette'] as Map<String, dynamic>;
       final primary = core['primary'] as Map<String, dynamic>;
@@ -191,14 +207,22 @@ void main() {
     });
 
     test('coreOnly() produces core-only output', () {
-      final json = ExportEngine().toJson(palette, tonal, ExportConfig.coreOnly());
+      final json = ExportEngine().toJson(
+        palette,
+        tonal,
+        ExportConfig.coreOnly(),
+      );
       final decoded = jsonDecode(json) as Map<String, dynamic>;
       expect(decoded.containsKey('core_palette'), isTrue);
       expect(decoded.containsKey('tonal_palettes'), isFalse);
     });
 
     test('tonalOnly() produces tonal-only output', () {
-      final json = ExportEngine().toJson(palette, tonal, ExportConfig.tonalOnly());
+      final json = ExportEngine().toJson(
+        palette,
+        tonal,
+        ExportConfig.tonalOnly(),
+      );
       final decoded = jsonDecode(json) as Map<String, dynamic>;
       expect(decoded.containsKey('core_palette'), isFalse);
       expect(decoded.containsKey('tonal_palettes'), isTrue);
@@ -215,7 +239,12 @@ void main() {
     setUp(() {
       customPalette = engine.deriveCorePalette(
         '#4A90E2',
-        DerivationConfig(customColors: [(name: 'accent', hex: '#FF6B35'), (name: 'brand', hex: '#00CC44')]),
+        DerivationConfig(
+          customColors: [
+            (name: 'accent', hex: '#FF6B35'),
+            (name: 'brand', hex: '#00CC44'),
+          ],
+        ),
       );
       customTonal = engine.generateTonalPalettes(customPalette);
     });
@@ -261,7 +290,10 @@ void main() {
 
       expect(accentTones.isNotEmpty, isTrue);
       expect(accentTones.values.first, isA<Map<String, dynamic>>());
-      expect((accentTones.values.first as Map<String, dynamic>)['hex'], isA<String>());
+      expect(
+        (accentTones.values.first as Map<String, dynamic>)['hex'],
+        isA<String>(),
+      );
     });
 
     test('palette without custom colors has empty custom array', () {
@@ -353,17 +385,29 @@ void main() {
   // ===========================================================================
   group('ExportEngine.toText ExportConfig flags', () {
     test('includeCorePalette=false omits [CORE PALETTE]', () {
-      final text = ExportEngine().toText(palette, tonal, const ExportConfig(includeCorePalette: false));
+      final text = ExportEngine().toText(
+        palette,
+        tonal,
+        const ExportConfig(includeCorePalette: false),
+      );
       expect(text, isNot(contains('[CORE PALETTE]')));
     });
 
     test('includeTonalPalettes=false omits [TONAL PALETTES]', () {
-      final text = ExportEngine().toText(palette, tonal, const ExportConfig(includeTonalPalettes: false));
+      final text = ExportEngine().toText(
+        palette,
+        tonal,
+        const ExportConfig(includeTonalPalettes: false),
+      );
       expect(text, isNot(contains('[TONAL PALETTES]')));
     });
 
     test('includeOklch=false omits oklch strings', () {
-      final text = ExportEngine().toText(palette, tonal, const ExportConfig(includeOklch: false));
+      final text = ExportEngine().toText(
+        palette,
+        tonal,
+        const ExportConfig(includeOklch: false),
+      );
       expect(text, isNot(contains('oklch(')));
       expect(text, contains('#'));
     });
@@ -469,7 +513,8 @@ void main() {
 
     test('bad path throws HuevoraExportException', () async {
       await expectLater(
-        () => ExportEngine().writeToFile('content', '/nonexistent/dir/file.txt'),
+        () =>
+            ExportEngine().writeToFile('content', '/nonexistent/dir/file.txt'),
         throwsA(isA<HuevoraExportException>()),
       );
     });
@@ -486,7 +531,10 @@ void main() {
 
     test('exception carries cause', () async {
       try {
-        await ExportEngine().writeToFile('content', '/nonexistent/dir/file.txt');
+        await ExportEngine().writeToFile(
+          'content',
+          '/nonexistent/dir/file.txt',
+        );
         fail('Expected HuevoraExportException');
       } on HuevoraExportException catch (e) {
         expect(e.cause, isNotNull);
@@ -532,8 +580,14 @@ void main() {
       );
       final validatedTonal = engine.generateTonalPalettes(validated);
 
-      expect(() => ExportEngine().toJson(validated, validatedTonal), returnsNormally);
-      expect(() => ExportEngine().toText(validated, validatedTonal), returnsNormally);
+      expect(
+        () => ExportEngine().toJson(validated, validatedTonal),
+        returnsNormally,
+      );
+      expect(
+        () => ExportEngine().toText(validated, validatedTonal),
+        returnsNormally,
+      );
     });
 
     test('extreme primaries export without throwing', () {
@@ -556,7 +610,11 @@ void main() {
             final colorData = entry.value as Map<String, dynamic>;
             final hex = colorData['hex'] as String?;
             if (hex != null) {
-              expect(hex, matches(r'^#[0-9A-F]{6}$'), reason: 'Invalid hex: $hex');
+              expect(
+                hex,
+                matches(r'^#[0-9A-F]{6}$'),
+                reason: 'Invalid hex: $hex',
+              );
             }
           }
         }

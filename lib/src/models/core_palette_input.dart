@@ -79,7 +79,9 @@ final class CorePaletteInput {
       info: info,
       warning: warning,
       success: success,
-      customColors: List<({String name, String hex})>.unmodifiable(customColors),
+      customColors: List<({String name, String hex})>.unmodifiable(
+        customColors,
+      ),
     );
   }
 

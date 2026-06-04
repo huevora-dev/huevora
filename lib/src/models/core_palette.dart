@@ -97,7 +97,7 @@ final class CorePalette {
     required this.warning,
     required this.success,
     required List<({String name, HuevoraColor color})> custom,
-  // ignore: prefer_initializing_formals
+    // ignore: prefer_initializing_formals
   }) : _custom = custom;
 
   /// Returns the nine standard role colors as an ordered map.
@@ -105,17 +105,19 @@ final class CorePalette {
   /// [ColorRole.custom] is not included because it does not represent a single
   /// standard role color.
   Map<ColorRole, HuevoraColor> asMap() {
-    return UnmodifiableMapView<ColorRole, HuevoraColor>(<ColorRole, HuevoraColor>{
-      ColorRole.primary: primary,
-      ColorRole.secondary: secondary,
-      ColorRole.tertiary: tertiary,
-      ColorRole.neutral: neutral,
-      ColorRole.neutralVariant: neutralVariant,
-      ColorRole.error: error,
-      ColorRole.info: info,
-      ColorRole.warning: warning,
-      ColorRole.success: success,
-    });
+    return UnmodifiableMapView<ColorRole, HuevoraColor>(
+      <ColorRole, HuevoraColor>{
+        ColorRole.primary: primary,
+        ColorRole.secondary: secondary,
+        ColorRole.tertiary: tertiary,
+        ColorRole.neutral: neutral,
+        ColorRole.neutralVariant: neutralVariant,
+        ColorRole.error: error,
+        ColorRole.info: info,
+        ColorRole.warning: warning,
+        ColorRole.success: success,
+      },
+    );
   }
 
   /// Returns the color assigned to [role].
@@ -166,7 +168,11 @@ final class CorePalette {
     return buffer.toString();
   }
 
-  static void _writeRole(StringBuffer buffer, ColorRole role, HuevoraColor color) {
+  static void _writeRole(
+    StringBuffer buffer,
+    ColorRole role,
+    HuevoraColor color,
+  ) {
     buffer.writeln('  $role: ${color.hex},');
   }
 }

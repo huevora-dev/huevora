@@ -84,7 +84,8 @@ final class HuevoraColor {
   }
 
   /// ARGB integer expected by material_color_utilities: `0xFFRRGGBB`.
-  int get argb => _argb ??= _opaqueAlphaMask | int.parse(_hex.substring(1), radix: 16);
+  int get argb =>
+      _argb ??= _opaqueAlphaMask | int.parse(_hex.substring(1), radix: 16);
 
   /// Canonical HEX representation: `#RRGGBB`.
   String get hex => _hex;
@@ -93,29 +94,49 @@ final class HuevoraColor {
     return hex.startsWith('#') ? hex.toUpperCase() : '#${hex.toUpperCase()}';
   }
 
-  static void _validateHex({required String originalHex, required String normalizedHex}) {
-    if (normalizedHex.length != 7 || !_canonicalHexPattern.hasMatch(normalizedHex)) {
+  static void _validateHex({
+    required String originalHex,
+    required String normalizedHex,
+  }) {
+    if (normalizedHex.length != 7 ||
+        !_canonicalHexPattern.hasMatch(normalizedHex)) {
       throw InvalidHexException(originalHex);
     }
   }
 
   static void _validateOklch(OklchComponents oklch) {
     if (!oklch.l.isFinite || oklch.l < 0.0 || oklch.l > 1.0) {
-      throw InvalidChannelValueException(channel: 'lightness', value: oklch.l, min: 0.0, max: 1.0);
+      throw InvalidChannelValueException(
+        channel: 'lightness',
+        value: oklch.l,
+        min: 0.0,
+        max: 1.0,
+      );
     }
 
     if (!oklch.c.isFinite || oklch.c < 0.0) {
-      throw InvalidChannelValueException(channel: 'chroma', value: oklch.c, min: 0.0, max: double.infinity);
+      throw InvalidChannelValueException(
+        channel: 'chroma',
+        value: oklch.c,
+        min: 0.0,
+        max: double.infinity,
+      );
     }
 
     if (!oklch.h.isFinite || oklch.h < 0.0 || oklch.h >= _degreesPerTurn) {
-      throw InvalidChannelValueException(channel: 'hue', value: oklch.h, min: 0.0, max: _degreesPerTurn);
+      throw InvalidChannelValueException(
+        channel: 'hue',
+        value: oklch.h,
+        min: 0.0,
+        max: _degreesPerTurn,
+      );
     }
   }
 
   @override
   bool operator ==(Object other) {
-    return identical(this, other) || other is HuevoraColor && _hex == other._hex;
+    return identical(this, other) ||
+        other is HuevoraColor && _hex == other._hex;
   }
 
   @override
@@ -152,7 +173,9 @@ final class OklchComponents {
 
   /// Constructs [OklchComponents], normalizing [h].
   const OklchComponents({required this.l, required this.c, required double h})
-    : h = c <= _achromaticChromaThreshold ? 0.0 : ((h % _degreesPerTurn) + _degreesPerTurn) % _degreesPerTurn;
+    : h = c <= _achromaticChromaThreshold
+          ? 0.0
+          : ((h % _degreesPerTurn) + _degreesPerTurn) % _degreesPerTurn;
 
   /// Returns a copy with [l] replaced.
   OklchComponents withL(double newL) => OklchComponents(l: newL, c: c, h: h);
@@ -165,7 +188,11 @@ final class OklchComponents {
 
   @override
   bool operator ==(Object other) {
-    return identical(this, other) || other is OklchComponents && l == other.l && c == other.c && h == other.h;
+    return identical(this, other) ||
+        other is OklchComponents &&
+            l == other.l &&
+            c == other.c &&
+            h == other.h;
   }
 
   @override
