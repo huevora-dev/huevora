@@ -14,11 +14,11 @@ A production-grade color engine for Dart. Derive complete design-system palettes
 
 [![License](https://img.shields.io/github/license/huevora-dev/huevora)](LICENSE)
 
-[![GitHub Stars](https://img.shields.io/github/stars/huevora-dev/huevora?style=social)](https://github.com/your_username/your_repo)
+[![GitHub Stars](https://img.shields.io/github/stars/huevora-dev/huevora?style=social)](https://github.com/huevora-dev/huevora)
 
-[![Issues](https://img.shields.io/github/issues/your_username/your_repo)](https://github.com/your_username/your_repo/issues)
+[![Issues](https://img.shields.io/github/issues/huevora-dev/huevora)](https://github.com/huevora-dev/huevora/issues)
 
-[![CI](https://github.com/your_username/your_repo/actions/workflows/ci.yml/badge.svg)](https://github.com/your_username/your_repo/actions)
+[![CI](https://github.com/huevora-dev/huevora/actions/workflows/ci.yml/badge.svg)](https://github.com/huevora-dev/huevora/actions)
 
 ---
 
