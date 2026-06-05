@@ -17,7 +17,10 @@ void main() async {
   print('=== Deriving palette ===');
   final palette = engine.deriveCorePalette(
     '#4A90E2',
-    DerivationConfig(semanticBrandingWeight: 0.25, customColors: [(name: 'accent', hex: '#FF6B35')]),
+    DerivationConfig(
+      semanticBrandingWeight: 0.25,
+      customColors: [(name: 'accent', hex: '#FF6B35')],
+    ),
   );
 
   print('Primary:    ${palette.primary.hex}');

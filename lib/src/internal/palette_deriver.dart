@@ -37,9 +37,21 @@ abstract final class PaletteDeriver {
 
   // ─── Semantic role definitions: fixed L/C anchors, configurable strength ───
   static const _semanticDefinitions = <ColorRole, _SemanticAnchor>{
-    ColorRole.success: _SemanticAnchor(baseHue: 145.0, lightness: 0.60, chroma: 0.14),
-    ColorRole.info: _SemanticAnchor(baseHue: 230.0, lightness: 0.62, chroma: 0.14),
-    ColorRole.warning: _SemanticAnchor(baseHue: 80.0, lightness: 0.72, chroma: 0.16),
+    ColorRole.success: _SemanticAnchor(
+      baseHue: 145.0,
+      lightness: 0.60,
+      chroma: 0.14,
+    ),
+    ColorRole.info: _SemanticAnchor(
+      baseHue: 230.0,
+      lightness: 0.62,
+      chroma: 0.14,
+    ),
+    ColorRole.warning: _SemanticAnchor(
+      baseHue: 80.0,
+      lightness: 0.72,
+      chroma: 0.16,
+    ),
     ColorRole.error: _SemanticAnchor(
       baseHue: 25.0,
       lightness: 0.58,
@@ -62,34 +74,77 @@ abstract final class PaletteDeriver {
       tertiary: _deriveTertiary(primaryComponents),
       neutral: _deriveNeutral(primaryComponents, config),
       neutralVariant: _deriveNeutralVariant(primaryComponents, config),
-      error: _deriveSemantic(primaryComponents, config, _errorBaseHue, ColorRole.error),
-      info: _deriveSemantic(primaryComponents, config, _infoBaseHue, ColorRole.info),
-      warning: _deriveSemantic(primaryComponents, config, _warningBaseHue, ColorRole.warning),
-      success: _deriveSemantic(primaryComponents, config, _successBaseHue, ColorRole.success),
+      error: _deriveSemantic(
+        primaryComponents,
+        config,
+        _errorBaseHue,
+        ColorRole.error,
+      ),
+      info: _deriveSemantic(
+        primaryComponents,
+        config,
+        _infoBaseHue,
+        ColorRole.info,
+      ),
+      warning: _deriveSemantic(
+        primaryComponents,
+        config,
+        _warningBaseHue,
+        ColorRole.warning,
+      ),
+      success: _deriveSemantic(
+        primaryComponents,
+        config,
+        _successBaseHue,
+        ColorRole.success,
+      ),
     );
   }
 
-  static HuevoraColor _deriveSecondary(OklchComponents primary, DerivationConfig config) {
-    return _materialize(OklchComponents(l: primary.l, c: primary.c * _secondaryChromaScale, h: primary.h));
-  }
-
-  static HuevoraColor _deriveTertiary(OklchComponents primary) {
-    return _materialize(
-      OklchComponents(l: primary.l, c: primary.c * _tertiaryChromaScale, h: primary.h + _complementaryHueOffset),
-    );
-  }
-
-  static HuevoraColor _deriveNeutral(OklchComponents primary, DerivationConfig config) {
+  static HuevoraColor _deriveSecondary(
+    OklchComponents primary,
+    DerivationConfig config,
+  ) {
     return _materialize(
       OklchComponents(
         l: primary.l,
-        c: _clamp(primary.c * _neutralChromaScale, config.neutralMinChroma, config.neutralMaxChroma),
+        c: primary.c * _secondaryChromaScale,
         h: primary.h,
       ),
     );
   }
 
-  static HuevoraColor _deriveNeutralVariant(OklchComponents primary, DerivationConfig config) {
+  static HuevoraColor _deriveTertiary(OklchComponents primary) {
+    return _materialize(
+      OklchComponents(
+        l: primary.l,
+        c: primary.c * _tertiaryChromaScale,
+        h: primary.h + _complementaryHueOffset,
+      ),
+    );
+  }
+
+  static HuevoraColor _deriveNeutral(
+    OklchComponents primary,
+    DerivationConfig config,
+  ) {
+    return _materialize(
+      OklchComponents(
+        l: primary.l,
+        c: _clamp(
+          primary.c * _neutralChromaScale,
+          config.neutralMinChroma,
+          config.neutralMaxChroma,
+        ),
+        h: primary.h,
+      ),
+    );
+  }
+
+  static HuevoraColor _deriveNeutralVariant(
+    OklchComponents primary,
+    DerivationConfig config,
+  ) {
     return _materialize(
       OklchComponents(
         l: primary.l,
@@ -110,14 +165,21 @@ abstract final class PaletteDeriver {
     ColorRole role,
   ) {
     final anchor = _semanticDefinitions[role]!;
-    final strength = anchor.fixedHarmonizeStrength ?? config.semanticBrandingWeight;
+    final strength =
+        anchor.fixedHarmonizeStrength ?? config.semanticBrandingWeight;
     return _materialize(
-      OklchComponents(l: anchor.lightness, c: anchor.chroma, h: _blendHue(baseHue, primary.h, strength)),
+      OklchComponents(
+        l: anchor.lightness,
+        c: anchor.chroma,
+        h: _blendHue(baseHue, primary.h, strength),
+      ),
     );
   }
 
   static HuevoraColor _materialize(OklchComponents components) {
-    return ColorConverter.fromOklchComponents(GamutGuard.clipComponents(components));
+    return ColorConverter.fromOklchComponents(
+      GamutGuard.clipComponents(components),
+    );
   }
 
   /// Blends from [base] toward [target] using linear interpolation.
