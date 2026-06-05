@@ -38,3 +38,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - CSS variable export format (`:root` tokens).
 - Figma plugin integration helpers.
 - P3/display-p3 gamut support.
+
+## [1.0.1] — 2026-06-04
+
+### Added
+
+- **PaletteDeriver** — Updated the OKLCH-based perceptual derivation with configurable semantic branding weight, hue offsets, and chroma bounds.
