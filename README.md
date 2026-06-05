@@ -53,7 +53,7 @@ void main() {
 
 ```yaml
 dependencies:
-  huevora: ^1.0.0
+  huevora: ^1.0.1+2
 ```
 
 ```bash
@@ -153,19 +153,17 @@ Internal (lib/src/internal/)
 
 ## Color Derivation Logic
 
-| Role             | Derivation                                           |
-| ---------------- | ---------------------------------------------------- |
-| `primary`        | Input seed color                                     |
-| `secondary`      | Analogous (+30° hue offset, 85% chroma)              |
-| `tertiary`       | Complementary (+180° hue, 90% chroma)                |
-| `neutral`        | Primary hue, chroma clamped to [0.002, 0.006], L=0.5 |
-| `neutralVariant` | Primary hue, chroma clamped to [0.004, 0.010], L=0.5 |
-| `success`        | Base hue 145°, pulled 25% toward primary hue         |
-| `error`          | Base hue 25°, pulled 25% toward primary hue          |
-| `warning`        | Base hue 75°, pulled 25% toward primary hue          |
-| `info`           | Base hue 240°, pulled 25% toward primary hue         |
-
-Semantic hue blending uses linear interpolation: `derivedHue = base + (primary - base) × brandingWeight`.
+| Role             | Derivation                                   |
+| ---------------- | -------------------------------------------- |
+| `primary`        | Input seed color                             |
+| `secondary`      | Analogous (+30° hue offset, 65% chroma)      |
+| `tertiary`       | Complementary (+180° hue, 70% chroma)        |
+| `neutral`        | Primary hue, chroma clamped to [0.018, 0.10] |
+| `neutralVariant` | Primary hue, chroma clamped to [0.045, 0.10] |
+| `success`        | Base hue 145°, pulled 25% toward primary hue |
+| `error`          | Base hue 25°, pulled 25% toward primary hue  |
+| `warning`        | Base hue 75°, pulled 25% toward primary hue  |
+| `info`           | Base hue 240°, pulled 25% toward primary hue |
 
 ---
 

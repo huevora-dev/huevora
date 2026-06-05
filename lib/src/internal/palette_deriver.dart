@@ -33,7 +33,7 @@ abstract final class PaletteDeriver {
   static const double _neutralChromaScale = 0.08;
   static const double _neutralVariantChromaScale = 0.18;
 
-  static const double _complementaryHueOffset = 60.0;
+  static const double _complementaryHueOffset = 180.0;
 
   // ─── Semantic role definitions: fixed L/C anchors, configurable strength ───
   static const _semanticDefinitions = <ColorRole, _SemanticAnchor>{
