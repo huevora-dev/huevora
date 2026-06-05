@@ -2,7 +2,7 @@
 
 A production-grade color engine for Dart. Derive complete design-system palettes from a single hex color, generate Material-style tonal palettes, validate contrast via APCA and WCAG 2.x, and export to JSON or plain text.
 
-[![Dart SDK](https://img.shields.io/badge/dart-%5E3.0+-blue.svg)](https://dart.dev) [![GitHub Stars](https://img.shields.io/github/stars/huevora-dev/huevora?style=social)](https://github.com/huevora-dev/huevora) [![Issues](https://img.shields.io/github/issues/huevora-dev/huevora)](https://github.com/huevora-dev/huevora/issues) [![CI](https://github.com/huevora-dev/huevora/actions/workflows/ci.yml/badge.svg)](https://github.com/huevora-dev/huevora/actions) [![Pub Version](https://img.shields.io/pub/v/huevora)](https://pub.dev/packages/huevora) [![Pub Points](https://img.shields.io/pub/points/huevora)](https://pub.dev/packages/huevora/score) [![Popularity](https://img.shields.io/pub/popularity/your_package_name)](https://pub.dev/packages/huevora/score) [![Likes](https://img.shields.io/pub/likes/huevora)](https://pub.dev/packages/huevora)
+[![Dart SDK](https://img.shields.io/badge/dart-%5E3.0+-blue.svg)](https://dart.dev) [![GitHub Stars](https://img.shields.io/github/stars/huevora-dev/huevora?style=social)](https://github.com/huevora-dev/huevora) [![Issues](https://img.shields.io/github/issues/huevora-dev/huevora)](https://github.com/huevora-dev/huevora/issues) [![Pub Version](https://img.shields.io/pub/v/huevora)](https://pub.dev/packages/huevora) [![Pub Points](https://img.shields.io/pub/points/huevora)](https://pub.dev/packages/huevora/score) [![Likes](https://img.shields.io/pub/likes/huevora)](https://pub.dev/packages/huevora)
 
 ---
 
