@@ -22,14 +22,14 @@ final class DerivationConfig {
   static const double defaultSemanticBrandingWeight = 0.25;
   static const double defaultSecondaryHueOffset = 30.0;
 
-  static const double defaultNeutralMinChroma = 0.002;
-  static const double defaultNeutralMaxChroma = 0.006;
+  static const double defaultNeutralMinChroma = 0.018;
+  static const double defaultNeutralMaxChroma = 0.10;
 
-  static const double defaultNeutralVariantMinChroma = 0.004;
-  static const double defaultNeutralVariantMaxChroma = 0.010;
+  static const double defaultNeutralVariantMinChroma = 0.045;
+  static const double defaultNeutralVariantMaxChroma = 0.10;
 
-  static const double defaultSemanticMinChroma = 0.012;
-  static const double defaultSemanticMaxChroma = 0.048;
+  static const double defaultSemanticMinChroma = 0.12;
+  static const double defaultSemanticMaxChroma = 0.20;
 
   /// How strongly semantic signal colors are pulled toward the primary hue.
   ///
