@@ -3,7 +3,7 @@ description:
   A production-grade color engine for Dart. Derive complete design-system
   palettes from a single hex color, generate Material-style tonal palettes,
   validate contrast via APCA and WCAG 2.x, and export to JSON or plain text.
-version: 1.0.1
+version: 1.0.1+1
 homepage: https://github.com/huevora-dev/huevora
 repository: https://github.com/huevora-dev/huevora
 issue_tracker: https://github.com/huevora-dev/huevora/issues
