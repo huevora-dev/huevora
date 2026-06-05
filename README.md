@@ -53,7 +53,7 @@ void main() {
 
 ```yaml
 dependencies:
-  huevora: ^1.0.1+2
+  huevora: ^1.0.2+1
 ```
 
 ```bash
