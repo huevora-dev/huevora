@@ -34,7 +34,7 @@ Derives a complete palette from a single primary hex color.
 
 **Parameters**:
 - `primaryHex` — `#RGB`, `#RRGGBB`, `RGB`, or `RRGGBB` format
-- `config` — optional derivation parameters (branding weight, hue offsets, chroma bounds, custom colors)
+- `config` — optional derivation parameters (hue offset, chroma bounds, custom colors)
 
 **Returns**: `CorePalette` with all 9 standard roles populated.
 
@@ -48,7 +48,7 @@ final palette = ColorEngine().deriveCorePalette('#4A90E2');
 final withCustom = ColorEngine().deriveCorePalette(
   '#4A90E2',
   DerivationConfig(
-    semanticBrandingWeight: 0.5,
+    secondaryHueOffset: 30.0,
     customColors: [(name: 'accent', hex: '#FF6B35')],
   ),
 );
@@ -379,19 +379,18 @@ final class ContrastResult {
 
 ```dart
 final class DerivationConfig {
-  final double semanticBrandingWeight;   // [0, 1], default 0.25
   final double secondaryHueOffset;       // default +30.0
-  final double neutralMinChroma;         // default 0.002
-  final double neutralMaxChroma;         // default 0.006
-  final double neutralVariantMinChroma;  // default 0.004
-  final double neutralVariantMaxChroma;  // default 0.010
-  final double semanticMinChroma;        // default 0.012
-  final double semanticMaxChroma;        // default 0.048
+  final double neutralMinChroma;         // default 0.018
+  final double neutralMaxChroma;         // default 0.10
+  final double neutralVariantMinChroma;  // default 0.045
+  final double neutralVariantMaxChroma;  // default 0.10
   final List<({String name, String hex})> customColors;
 
   factory DerivationConfig.standard();
 }
 ```
+
+**Note**: `semanticBrandingWeight`, `semanticMinChroma`, and `semanticMaxChroma` are retained for backward compatibility but are no longer used by the default derivation pipeline. Semantic colors use fixed per-role lightness, chroma, and harmonization strength.
 
 ### ExportConfig
 

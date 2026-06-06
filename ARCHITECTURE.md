@@ -4,20 +4,20 @@
 
 Huevora solves the problem of **deterministic, branded color system generation** for design systems and applications. Core concerns:
 
-| Concern | Complexity Driver |
-|---------|-----------------|
-| Bidirectional color conversion | Multiple color spaces, precision loss, gamut boundaries |
-| Core palette derivation | Perceptual relationships in OKLCH space |
-| Tonal palette generation | HCT space (MCU), non-uniform tone steps for neutral |
-| Contrast checking | Two standards (APCA + WCAG 2.x), different math |
-| Export | Serialization shape, format negotiation, platform abstraction |
+| Concern                        | Complexity Driver                                             |
+| ------------------------------ | ------------------------------------------------------------- |
+| Bidirectional color conversion | Multiple color spaces, precision loss, gamut boundaries       |
+| Core palette derivation        | Perceptual relationships in OKLCH space                       |
+| Tonal palette generation       | HCT space (MCU), non-uniform tone steps for neutral           |
+| Contrast checking              | Two standards (APCA + WCAG 2.x), different math               |
+| Export                         | Serialization shape, format negotiation, platform abstraction |
 
 ## 2. Dependency Audit
 
-| Package | Pin | Latest Stable | Status |
-|---------|-----|---------------|--------|
-| `prism` | ^2.1.0 | 2.1.0 (Oct 2025, Dart ≥3.3) | ✅ Exact match |
-| `material_color_utilities` | ^0.13.0 | 0.12.0 last confirmed; 0.13.0 may be pre-release | ⚠️ Verify on pub.dev |
+| Package                    | Pin     | Latest Stable                | Status         |
+| -------------------------- | ------- | ---------------------------- | -------------- |
+| `prism`                    | ^2.1.0  | 2.1.0 (Oct 2025, Dart ≥3.3)  | ✅ Exact match |
+| `material_color_utilities` | ^0.13.0 | 0.13.0 (Flutter 3.41 stable) | ✅ Verified    |
 
 **MCU version note**: The architecture is version-agnostic at the MCU boundary. Only `TonalGenerator` touches MCU types. A version bump requires zero internal changes beyond the dependency pin.
 
@@ -35,6 +35,7 @@ Huevora solves the problem of **deterministic, branded color system generation**
 │  ColorEngine │ │ContrastEngine│ │ ExportEngine  │
 │  (subsystem) │ │  (subsystem) │ │  (subsystem)  │
 └──────┬───────┘ └──────┬───────┘ └───────┬───────┘
+       │                │                  │
        │                │                  │
        ▼                ▼                  ▼
 ┌──────────────────────────────────────────────────┐
@@ -104,14 +105,14 @@ User: hex string (#4A90E2)
          │
          ▼
   PaletteDeriver.derive(primaryOklch)
-    ├─ secondary  = analogous(±30°, chroma ×0.85)
-    ├─ tertiary   = complementary(+180°, chroma ×0.9)
-    ├─ neutral    = primary hue, chroma clamp [2..6], L=0.5
-    ├─ neutralVar = primary hue, chroma clamp [4..10], L=0.5
-    ├─ success    = hue ~145°, blended toward primary ×0.25
-    ├─ error      = hue ~25°, blended toward primary ×0.25
-    ├─ warning    = hue ~75°, blended toward primary ×0.25
-    ├─ info       = hue ~240°, blended toward primary ×0.25
+    ├─ secondary  = analogous(primary.h + secondaryHueOffset, chroma ×0.65)
+    ├─ tertiary   = complementary(primary.h + 180°, chroma ×0.70)
+    ├─ neutral    = primary hue, chroma clamp [0.018, 0.10], L preserved
+    ├─ neutralVar = primary hue, chroma clamp [0.045, 0.10], L preserved
+    ├─ success    = base hue 145°, L=0.60, C=0.14, harmonized 20% toward primary
+    ├─ error      = base hue 25°,  L=0.58, C=0.20, harmonized 5% toward primary
+    ├─ warning    = base hue 80°,  L=0.72, C=0.16, harmonized 12% toward primary
+    ├─ info       = base hue 230°, L=0.62, C=0.14, harmonized 20% toward primary
     └─ custom[]   = passed through, gamut-checked
          │
          ▼
@@ -211,6 +212,7 @@ final List<int>? suggestedBgTones;
 Every color crosses it twice: once after derivation, once before MCU ingestion.
 
 **Approach**:
+
 - Fast path: `RayOklab.getMaxValidChroma()` (linear cusp approximation)
 - Fallback: OKLCH→RGB8→OKLCH round-trip verification (catches approximation errors)
 - Clip: binary search on chroma using the round-trip predicate as ground truth
@@ -234,14 +236,12 @@ Scale: 1.14, offset: 0.027
 
 ```json
 {
-  "huevora_version": "1.0.0",
+  "huevora_version": "1.0.3",
   "generated_at": "2026-06-02T...",
   "core_palette": {
     "primary": { "hex": "#4A90E2", "oklch": "oklch(0.6274 0.1462 247.73)" },
     "neutralVariant": { "hex": "#...", "oklch": "..." },
-    "custom": [
-      { "name": "accent", "hex": "#FF6B35", "oklch": "..." }
-    ]
+    "custom": [{ "name": "accent", "hex": "#FF6B35", "oklch": "..." }]
   },
   "tonal_palettes": {
     "primary": { "0": { "hex": "#000000" }, "5": { "hex": "#..." } },
@@ -255,7 +255,7 @@ Scale: 1.14, offset: 0.027
 ```
 -- HUEVORA EXPORT --
 Generated: 2026-06-02T12:00:00.000Z
-Version: 1.0.0
+Version: 1.0.3
 
 [CORE PALETTE]
 primary                         #4A90E2  oklch(0.6274 0.1462 247.73)
@@ -267,8 +267,6 @@ neutral-variant                 #...     oklch(...)
 primary-0                       #000000
 primary-5                       #...
 ...
-neutral-0                       #000000
-neutral-4                       #...
 ```
 
 ## 10. Error Handling Strategy
@@ -286,23 +284,24 @@ final class HuevoraExportException extends HuevoraException { final String fileP
 
 ## 11. Key Design Decisions — Trade-Off Record
 
-| Decision | Chosen | Rejected | Reason |
-|----------|--------|----------|--------|
-| Primary color space | OKLCH | HSL, LCH | Perceptually uniform, CSS native, prism-native |
-| Tonal space | HCT (via MCU) | OKLCH lightness steps | Material 3 tones are defined in HCT |
-| APCA implementation | Hand-ported (internal) | Third-party pkg | No mature Dart APCA package exists |
-| Gamut strategy | Clip at every boundary | Reject and throw | Rejection breaks workflow; clamped alternative returned |
-| Semantic hue blending | Linear interpolation | Shortest-path circular | Shortest-path jumps perceptual family boundaries |
-| Export as string | Always return string, file write optional | Write-only | Strings are composable; callers can pipe to APIs |
-| MCU version pin | ^0.13.0 (verify) | ^0.12.0 | Design is version-agnostic at boundary |
-| File writer | Conditional import (dart:io / unsupported) | Direct dart:io import | Supports web compilation |
+| Decision                  | Chosen                                     | Rejected                    | Reason                                                                                              |
+| ------------------------- | ------------------------------------------ | --------------------------- | --------------------------------------------------------------------------------------------------- |
+| Primary color space       | OKLCH                                      | HSL, LCH                    | Perceptually uniform, CSS native, prism-native                                                      |
+| Tonal space               | HCT (via MCU)                              | OKLCH lightness steps       | Material 3 tones are defined in HCT                                                                 |
+| APCA implementation       | Hand-ported (internal)                     | Third-party pkg             | No mature Dart APCA package exists                                                                  |
+| Gamut strategy            | Clip at every boundary                     | Reject and throw            | Rejection breaks workflow; clamped alternative returned                                             |
+| Semantic hue blending     | Shortest-arc circular interpolation        | Linear scalar interpolation | Linear interpolation flips hue across 0°/360° boundary and drifts into adjacent perceptual families |
+| Semantic chroma/lightness | Fixed per-role anchors                     | Scaled from primary         | Scaling from primary produces washed-out or oversaturated signals on low/high chroma primaries      |
+| Export as string          | Always return string, file write optional  | Write-only                  | Strings are composable; callers can pipe to APIs                                                    |
+| MCU version pin           | ^0.13.0                                    | ^0.12.0                     | 0.13.0 verified on Flutter 3.41 stable                                                              |
+| File writer               | Conditional import (dart:io / unsupported) | Direct dart:io import       | Supports web compilation                                                                            |
 
 ## 12. Testing Strategy
 
-| Suite | Coverage |
-|-------|----------|
-| `color_conversion_test.dart` | Hex parsing, OKLCH round-trip, ARGB, shorthand expansion, gamut guard |
-| `palette_deriver_test.dart` | Derivation invariants, config tuning, custom colors, validation, edge cases |
-| `tonal_generation_test.dart` | Tone step arrays, monotonicity, neutral vs standard steps, custom tones |
-| `contrast_check_test.dart` | APCA reference values, WCAG boundaries, tone suggestions, integration |
-| `export_engine_test.dart` | JSON/TXT structure, config flags, custom colors, column alignment, file I/O |
+| Suite                        | Coverage                                                                    |
+| ---------------------------- | --------------------------------------------------------------------------- |
+| `color_conversion_test.dart` | Hex parsing, OKLCH round-trip, ARGB, shorthand expansion, gamut guard       |
+| `palette_deriver_test.dart`  | Derivation invariants, config tuning, custom colors, validation, edge cases |
+| `tonal_generation_test.dart` | Tone step arrays, monotonicity, neutral vs standard steps, custom tones     |
+| `contrast_check_test.dart`   | APCA reference values, WCAG boundaries, tone suggestions, integration       |
+| `export_engine_test.dart`    | JSON/TXT structure, config flags, custom colors, column alignment, file I/O |

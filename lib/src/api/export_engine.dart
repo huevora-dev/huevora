@@ -26,7 +26,7 @@ import 'package:huevora/src/models/tonal_palette_result.dart';
 /// - Does not create parent directories.
 /// - Does not produce adapter-specific token formats.
 final class ExportEngine {
-  static const String _version = '1.0.0';
+  static const String _version = '1.0.3';
   static const JsonEncoder _jsonEncoder = JsonEncoder.withIndent('  ');
 
   static const List<ColorRole> _standardRoles = <ColorRole>[

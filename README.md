@@ -12,7 +12,7 @@ A production-grade color engine for Dart. Derive complete design-system palettes
 | ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Bidirectional color conversion** | HEX ↔ OKLCH ↔ RGB with prism-backed precision                                                                                             |
 | **Branded palette derivation**     | 9 standard roles (primary, secondary, tertiary, neutral, neutralVariant, success, error, warning, info) derived perceptually in OKLCH space |
-| **Tonal palette generation**       | Material 3-style tone steps via `material_color_utilities`, with asymmetric neutral step arrays                                             |
+| **Tonal palette generation**       | Material 3-style tone steps via `material_color_utilities`, with asymmetric 28-step neutral arrays and 18-step standard arrays                                             |
 | **Contrast validation**            | APCA 0.0.98G + WCAG 2.x simultaneous checking with tone suggestions                                                                         |
 | **Export system**                  | JSON (structured) and TXT (token-style, Figma-friendly) with configurable inclusion flags                                                   |
 | **Gamut-safe by design**           | Every derived color is verified in-gamut via round-trip OKLCH→RGB8→OKLCH validation                                                         |
@@ -53,7 +53,7 @@ void main() {
 
 ```yaml
 dependencies:
-  huevora: ^1.0.2+1
+  huevora: ^1.0.3
 ```
 
 ```bash
@@ -71,7 +71,7 @@ final engine = ColorEngine();
 
 // Derive from primary hex
 final palette = engine.deriveCorePalette('#4A90E2', DerivationConfig(
-  semanticBrandingWeight: 0.25,
+  secondaryHueOffset: 30.0,
   customColors: [(name: 'accent', hex: '#FF6B35')],
 ));
 
@@ -120,50 +120,21 @@ await export.writeToFile(json, './palette.json');
 
 ---
 
-<!-- ## Architecture
-
-Huevora is organized in three layers:
-
-```
-Public API (lib/src/api/)
-├── ColorEngine        — palette derivation, conversion, tonal generation
-├── ContrastEngine     — APCA + WCAG contrast checking
-└── ExportEngine       — JSON/TXT serialization, file I/O
-
-Models (lib/src/models/)
-├── HuevoraColor       — canonical hex + OKLCH value object
-├── CorePalette        — 9 standard roles + custom colors
-├── TonalPaletteResult — role → tone → color maps
-├── ContrastResult     — scores, ratings, advice, tone suggestions
-├── ExportConfig       — inclusion flags for export
-└── HuevoraException   — sealed error hierarchy
-
-Internal (lib/src/internal/)
-├── ColorConverter     — wraps prism for space conversion
-├── PaletteDeriver     — OKLCH-based role derivation
-├── TonalGenerator     — wraps MCU TonalPalette
-├── GamutGuard         — sRGB gamut assertion + chroma clipping
-├── ApcaCalculator     — self-contained APCA 0.0.98G-4g
-└── ExportFileWriter   — conditional dart:io export
-```
-
-**Boundary rule**: No internal types leak into the public API. prism and material_color_utilities types are confined to the internal layer. -->
-
----
-
 ## Color Derivation Logic
 
-| Role             | Derivation                                   |
-| ---------------- | -------------------------------------------- |
-| `primary`        | Input seed color                             |
-| `secondary`      | Analogous (+30° hue offset, 65% chroma)      |
-| `tertiary`       | Complementary (+180° hue, 70% chroma)        |
-| `neutral`        | Primary hue, chroma clamped to [0.018, 0.10] |
-| `neutralVariant` | Primary hue, chroma clamped to [0.045, 0.10] |
-| `success`        | Base hue 145°, pulled 25% toward primary hue |
-| `error`          | Base hue 25°, pulled 25% toward primary hue  |
-| `warning`        | Base hue 75°, pulled 25% toward primary hue  |
-| `info`           | Base hue 240°, pulled 25% toward primary hue |
+| Role             | Derivation                                                                 |
+| ---------------- | -------------------------------------------------------------------------- |
+| `primary`        | Input seed color                                                           |
+| `secondary`      | Analogous (primary hue + `secondaryHueOffset`, 65% chroma, L preserved)    |
+| `tertiary`       | Complementary (primary hue + 180°, 70% chroma, L preserved)                |
+| `neutral`        | Branded — primary hue, chroma clamped [0.018, 0.10], L preserved            |
+| `neutralVariant` | Branded — primary hue, chroma clamped [0.045, 0.10], L preserved           |
+| `success`        | Branded — base hue 145°, L=0.60, C=0.14, harmonized 20% toward primary hue  |
+| `error`          | Branded — base hue 25°,  L=0.58, C=0.20, harmonized 5% toward primary hue   |
+| `warning`        | Branded — base hue 80°,  L=0.72, C=0.16, harmonized 12% toward primary hue  |
+| `info`           | Branded — base hue 230°, L=0.62, C=0.14, harmonized 20% toward primary hue  |
+
+**Hue harmonization** uses shortest-arc circular interpolation to prevent perceptual family drift when the primary and semantic base straddle the 0°/360° boundary.
 
 ---
 
@@ -175,6 +146,7 @@ Internal (lib/src/internal/)
 | Neutral              | 0, 4, 5, 6, 10, 12, 15, 17, 20, 22, 24, 25, 30, 35, 40, 50, 60, 70, 80, 87, 90, 92, 94, 95, 96, 98, 99, 100 |
 
 Neutral roles use denser steps at dark and light extremes for precise elevation overlay and surface tint control.
+
 ---
 
 ## Contrast Standards
